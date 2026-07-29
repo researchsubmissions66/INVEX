@@ -199,11 +199,12 @@ export class HumanBody {
         this.heatmap.apply(this, data);
         this.activeOrgans = Object.keys(data);
         
-        // Disable pointer events for organs not covered by the datasets
+        // Hide organs not covered by the datasets
         this.getAllOrgans().forEach(organ => {
             if (!data[organ.id]) {
-                organ.node.style.pointerEvents = "none";
+                organ.setVisible(false);
             } else {
+                organ.setVisible(true);
                 organ.node.style.pointerEvents = "auto";
             }
         });
