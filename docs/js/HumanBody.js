@@ -199,10 +199,11 @@ export class HumanBody {
         this.heatmap.apply(this, data);
         this.activeOrgans = Object.keys(data);
         
-        // Hide organs not covered by the datasets
+        // Disable pointer events for organs not covered by the datasets (but keep them visible for structural context)
         this.getAllOrgans().forEach(organ => {
             if (!data[organ.id]) {
-                organ.setVisible(false);
+                organ.setVisible(true); // make sure they are visible
+                organ.node.style.pointerEvents = "none";
             } else {
                 organ.setVisible(true);
                 organ.node.style.pointerEvents = "auto";
