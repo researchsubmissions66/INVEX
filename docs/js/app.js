@@ -12,6 +12,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let bodyInitialized = false;
     let body = null;
+    let autoPlayInterval = null;
+    
+    const stopAutoPlay = () => {
+        if (autoPlayInterval) {
+            clearInterval(autoPlayInterval);
+            autoPlayInterval = null;
+        }
+    };
 
     openBtn.addEventListener("click", async () => {
         modal.classList.add("show");
@@ -54,6 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     item.style.transition = "transform 0.1s";
                     
                     item.addEventListener("mouseenter", () => {
+                        stopAutoPlay();
                         item.style.transform = "scale(1.05)";
                         body.highlight(organId);
                     });
@@ -62,6 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         body.getOrgan(organId)?.unhighlight();
                     });
                     item.addEventListener("click", () => {
+                        stopAutoPlay();
                         body.select(organId);
                         body.flash(organId);
                     });
@@ -81,18 +91,39 @@ document.addEventListener("DOMContentLoaded", async () => {
                 });
             }
             
+            // Auto-play animation
+            const activeOrganIds = Object.keys(heatmapData);
+            let currentOrganIndex = 0;
+            
+            const playNext = () => {
+                const organId = activeOrganIds[currentOrganIndex];
+                body.select(organId);
+                body.flash(organId);
+                currentOrganIndex = (currentOrganIndex + 1) % activeOrganIds.length;
+            };
+            
+            stopAutoPlay();
+            playNext(); // Play first immediately
+            autoPlayInterval = setInterval(playNext, 2000);
+            
+            // Stop on body interaction
+            body.svg.addEventListener("click", () => stopAutoPlay());
+            body.svg.addEventListener("mouseover", () => stopAutoPlay());
+            
             bodyInitialized = true;
         }
     });
 
     closeBtn.addEventListener("click", () => {
         modal.classList.remove("show");
+        stopAutoPlay();
     });
     
     // Close when clicking outside
     modal.addEventListener("click", (e) => {
         if(e.target === modal) {
             modal.classList.remove("show");
+            stopAutoPlay();
         }
     });
 });
