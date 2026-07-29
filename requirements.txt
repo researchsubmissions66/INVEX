@@ -1,0 +1,12 @@
+# INVEX — analysis + CPU pipeline (figures/tables/oracle/aggregation)
+numpy==2.2.6
+scipy==1.15.3
+pandas==2.2.3
+scikit-learn==1.7.2
+h5py==3.16.0
+matplotlib==3.10.9
+Pillow==12.2.0
+
+# GPU stage only (rotated re-embedding, phase16); not needed to reproduce figures/tables
+# torch==2.5.1
+# timm==0.9.16

@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*$py.class
+emb_cache/
+results/
+figures/*
+!figures/logo.png
+old/
+slurm/
+tests/
+RESEARCH_LOG.md
+.env
+.ipynb_checkpoints/
+
