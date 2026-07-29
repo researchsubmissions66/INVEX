@@ -6,17 +6,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const modal = document.getElementById("anatomyModal");
     const openBtn = document.getElementById("openAnatomyBtn");
     const closeBtn = document.getElementById("closeAnatomyBtn");
-    const datasetPanel = document.getElementById("dataset-info-panel");
-    const datasetTitle = document.getElementById("dataset-info-title");
-    const datasetCount = document.getElementById("dataset-info-count");
-    const datasetContent = document.getElementById("dataset-info-content");
     const legendContainer = document.getElementById("anatomy-legend");
 
     if(!modal || !openBtn || !closeBtn) return;
 
     let bodyInitialized = false;
     let body = null;
-    let datasetsInfo = {};
 
     openBtn.addEventListener("click", async () => {
         modal.classList.add("show");
@@ -39,46 +34,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 "stomach": { color: "#a3e635" }      // Lime Green
             };
             
-            // Fetch dataset info
-            fetch("data/datasets_info.json")
-                .then(res => res.json())
-                .then(data => {
-                    datasetsInfo = data;
-                })
-                .catch(err => console.error("Failed to load dataset info:", err));
-
             // Apply Heatmap colors and show leader lines for them
             body.setHeatmap(heatmapData);
-            
-            // Handle selection changes to show dataset info
-            body.onSelectionChange = (selectedOrgans) => {
-                if (selectedOrgans.length === 1) {
-                    const organ = selectedOrgans[0];
-                    const datasets = datasetsInfo[organ.id];
-                    if (datasets && datasets.length > 0) {
-                        datasetPanel.style.display = "flex";
-                        datasetTitle.textContent = organ.label + " Datasets";
-                        datasetCount.textContent = `${datasets.length} Datasets`;
-                        
-                        let htmlContent = "";
-                        datasets.forEach(ds => {
-                            htmlContent += `
-                            <div class="dataset-item">
-                                <h4 class="dataset-title">${ds.dataset}</h4>
-                                <p class="dataset-ref"><i class="fas fa-book" style="margin-right: 0.4rem; color: #94a3b8;"></i> ${ds.reference}</p>
-                            </div>`;
-                        });
-                        datasetContent.innerHTML = htmlContent;
-                    } else {
-                        datasetPanel.style.display = "flex";
-                        datasetTitle.textContent = organ.label;
-                        datasetCount.textContent = "0 Datasets";
-                        datasetContent.innerHTML = "<p>No dataset information available for this organ.</p>";
-                    }
-                } else {
-                    datasetPanel.style.display = "none";
-                }
-            };
             
             // Add Legend
             if (legendContainer) {
