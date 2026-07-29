@@ -242,8 +242,13 @@
                 <h3 style="margin: 0;">Anatomical Diversity in INVEX</h3>
                 <button id="closeAnatomyBtn" class="close-anatomy-btn">&times;</button>
             </div>
-            <div class="anatomy-modal-body">
-                <div id="human-body-wrapper" style="width: 100%; height: 600px; position: relative; display: flex; justify-content: center; align-items: center;"></div>
+            <div class="anatomy-modal-body" style="display: flex; gap: 1.5rem;">
+                <div id="organ-sidebar" style="width: 220px; display: flex; flex-direction: column; gap: 1rem; overflow-y: auto; padding-right: 0.5rem;">
+                    <h4 style="margin: 0; font-size: 1.1rem; color: #333;">Select Organ</h4>
+                    <button id="showAllOrgansBtn" class="btn btn-primary" style="padding: 0.6rem 1rem; font-size: 0.9rem;">Show All</button>
+                    <div id="organ-buttons-container" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
+                </div>
+                <div id="human-body-wrapper" style="flex: 1; height: 600px; position: relative; display: flex; justify-content: center; align-items: center; background: #1e293b; border-radius: 8px;"></div>
             </div>
         </div>
     </div>
