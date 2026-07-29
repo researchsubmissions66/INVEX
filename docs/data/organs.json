@@ -1,0 +1,190 @@
+[
+  {
+    "id": "brain",
+    "label": "Brain",
+    "aliases": [
+      "cerebrum"
+    ],
+    "system": "Nervous"
+  },
+  {
+    "id": "thyroid",
+    "label": "Thyroid",
+    "aliases": [],
+    "system": "Endocrine"
+  },
+  {
+    "id": "esophagus",
+    "label": "Esophagus",
+    "aliases": [
+      "oesophagus"
+    ],
+    "system": "Digestive"
+  },
+  {
+    "id": "trachea",
+    "label": "Trachea",
+    "aliases": [
+      "windpipe"
+    ],
+    "system": "Respiratory"
+  },
+  {
+    "id": "heart",
+    "label": "Heart",
+    "aliases": [
+      "cardiac"
+    ],
+    "system": "Cardiovascular"
+  },
+  {
+    "id": "lung",
+    "label": "Lung",
+    "aliases": [
+      "pulmonary",
+      "left lung",
+      "right lung"
+    ],
+    "system": "Respiratory"
+  },
+  {
+    "id": "liver",
+    "label": "Liver",
+    "aliases": [
+      "hepatic"
+    ],
+    "system": "Digestive"
+  },
+  {
+    "id": "gallbladder",
+    "label": "Gallbladder",
+    "aliases": [],
+    "system": "Digestive"
+  },
+  {
+    "id": "pancreas",
+    "label": "Pancreas",
+    "aliases": [
+      "pancreatic"
+    ],
+    "system": "Digestive"
+  },
+  {
+    "id": "stomach",
+    "label": "Stomach",
+    "aliases": [
+      "gastric"
+    ],
+    "system": "Digestive"
+  },
+  {
+    "id": "spleen",
+    "label": "Spleen",
+    "aliases": [],
+    "system": "Lymphatic"
+  },
+  {
+    "id": "kidney",
+    "label": "Kidney",
+    "aliases": [
+      "renal",
+      "left kidney",
+      "right kidney"
+    ],
+    "system": "Urinary"
+  },
+  {
+    "id": "adrenal_gland",
+    "label": "Adrenal Gland",
+    "aliases": [],
+    "system": "Endocrine"
+  },
+  {
+    "id": "small_intestine",
+    "label": "Small Intestine",
+    "aliases": [],
+    "system": "Digestive"
+  },
+  {
+    "id": "colon",
+    "label": "Colon",
+    "aliases": [
+      "large intestine"
+    ],
+    "system": "Digestive"
+  },
+  {
+    "id": "rectum",
+    "label": "Rectum",
+    "aliases": [],
+    "system": "Digestive"
+  },
+  {
+    "id": "bladder",
+    "label": "Bladder",
+    "aliases": [
+      "urinary bladder"
+    ],
+    "system": "Urinary"
+  },
+  {
+    "id": "uterus",
+    "label": "Uterus",
+    "aliases": [],
+    "system": "Reproductive",
+    "sex": "female"
+  },
+  {
+    "id": "ovary",
+    "label": "Ovaries",
+    "aliases": [],
+    "system": "Reproductive",
+    "sex": "female"
+  },
+  {
+    "id": "prostate",
+    "label": "Prostate",
+    "aliases": [],
+    "system": "Reproductive",
+    "sex": "male"
+  },
+  {
+    "id": "testis",
+    "label": "Testes",
+    "aliases": [
+      "testicles"
+    ],
+    "system": "Reproductive",
+    "sex": "male"
+  },
+  {
+    "id": "skin",
+    "label": "Skin",
+    "aliases": [],
+    "system": "Integumentary"
+  },
+  {
+    "id": "lymph_node",
+    "label": "Lymph Nodes",
+    "aliases": [
+      "lymph"
+    ],
+    "system": "Lymphatic"
+  },
+  {
+    "id": "head_and_neck",
+    "label": "Head & Neck",
+    "aliases": [
+      "throat"
+    ],
+    "system": "Various"
+  },
+  {
+    "id": "breast",
+    "label": "Breast",
+    "aliases": [
+      "mammary"
+    ],
+    "system": "Integumentary"
+  }
+]
