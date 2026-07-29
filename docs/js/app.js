@@ -36,62 +36,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             // Apply Heatmap colors and show leader lines for them
             body.setHeatmap(heatmapData);
             
-            const btnContainer = document.getElementById("organ-buttons-container");
-            if(btnContainer) {
-                btnContainer.innerHTML = "";
-                Object.keys(heatmapData).forEach(id => {
-                    const btn = document.createElement("button");
-                    btn.className = "btn btn-secondary";
-                    btn.style.textAlign = "left";
-                    btn.style.padding = "0.6rem 1rem";
-                    btn.style.fontSize = "0.9rem";
-                    btn.style.display = "flex";
-                    btn.style.alignItems = "center";
-                    btn.style.justifyContent = "space-between";
-                    btn.style.border = "1px solid var(--border)";
-                    btn.style.background = "#fff";
-                    btn.style.cursor = "pointer";
-                    
-                    const label = id.split("_").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
-                    
-                    const colorSwatch = document.createElement("span");
-                    colorSwatch.style.width = "12px";
-                    colorSwatch.style.height = "12px";
-                    colorSwatch.style.borderRadius = "50%";
-                    colorSwatch.style.backgroundColor = heatmapData[id].color;
-                    
-                    const textSpan = document.createElement("span");
-                    textSpan.textContent = label;
-                    
-                    btn.appendChild(textSpan);
-                    btn.appendChild(colorSwatch);
-                    
-                    btn.addEventListener("click", () => {
-                        // Unselect all
-                        Object.keys(heatmapData).forEach(otherId => {
-                            if(body.getOrgan(otherId)) body.toggle(otherId, false);
-                        });
-                        // Select this one
-                        if(body.getOrgan(id)) body.toggle(id, true);
-                    });
-                    
-                    btnContainer.appendChild(btn);
-                });
-            }
-            
             // Force select them so they get leader lines (leader lines only show for selected by default)
             Object.keys(heatmapData).forEach(id => {
                 if(body.getOrgan(id)) body.toggle(id, true);
             });
-            
-            const showAllBtn = document.getElementById("showAllOrgansBtn");
-            if(showAllBtn) {
-                showAllBtn.addEventListener("click", () => {
-                    Object.keys(heatmapData).forEach(id => {
-                        if(body.getOrgan(id)) body.toggle(id, true);
-                    });
-                });
-            }
             
             bodyInitialized = true;
         }

@@ -36,6 +36,18 @@ export class LeaderLines {
         text.setAttribute("text-anchor", endX > 20 ? "end" : "start");
         text.textContent = labelText;
         
+        // Make text act as a button to isolate organ
+        text.style.cursor = "pointer";
+        text.style.pointerEvents = "all";
+        text.addEventListener("click", (e) => {
+            e.stopPropagation();
+            organ.node.dispatchEvent(new MouseEvent("click", {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            }));
+        });
+        
         group.appendChild(path);
         group.appendChild(text);
         this.svg.appendChild(group);
