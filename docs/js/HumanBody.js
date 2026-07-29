@@ -197,6 +197,15 @@ export class HumanBody {
     
     setHeatmap(data) {
         this.heatmap.apply(this, data);
+        
+        // Disable pointer events for organs not covered by the datasets
+        this.getAllOrgans().forEach(organ => {
+            if (!data[organ.id]) {
+                organ.node.style.pointerEvents = "none";
+            } else {
+                organ.node.style.pointerEvents = "auto";
+            }
+        });
     }
     
     setTheme(themeName) {
