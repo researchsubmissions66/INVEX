@@ -23,15 +23,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             
             // Set different colors for showcased organs
             const heatmapData = {
-                "breast": { color: "#f472b6" },           // Pastel Pink
-                "prostate": { color: "#2dd4bf" },         // Pastel Teal
-                "colon": { color: "#a78bfa" },            // Pastel Purple
-                "rectum": { color: "#fb7185" },           // Pastel Rose/Red
-                "small_intestine": { color: "#818cf8" },  // Pastel Indigo
-                "lung": { color: "#38bdf8" },             // Pastel Light Blue
-                "lymph_node": { color: "#facc15" },       // Pastel Yellow
-                "kidney": { color: "#fb923c" },           // Pastel Orange
-                "stomach": { color: "#a3e635" }           // Pastel Lime Green
+                "breast": { color: "#f4e0c4" },           // Pale Adipose (Yellow/Pink)
+                "prostate": { color: "#d2b4b4" },         // Pale Fleshy Pink
+                "colon": { color: "#c48989" },            // Muted Flesh Tone
+                "rectum": { color: "#b06b6b" },           // Darker Flesh Tone
+                "small_intestine": { color: "#e5b2b2" },  // Light Pinkish Flesh
+                "lung": { color: "#dca3a3" },             // Pale Reddish Pink
+                "lymph_node": { color: "#e6e6c8" },       // Pale Yellowish Grey
+                "kidney": { color: "#803333" },           // Deep Reddish Brown
+                "stomach": { color: "#c87a7a" }           // Fleshy Red-Brown
             };
             
             // Apply Heatmap colors and show leader lines for them
