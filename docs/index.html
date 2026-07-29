@@ -304,7 +304,10 @@
                 <button id="closeAnatomyBtn" class="close-anatomy-btn"><i class="fas fa-times"></i></button>
             </div>
             <div class="anatomy-modal-body" style="display: flex; gap: 2rem; align-items: stretch; height: 600px;">
-                <div id="human-body-wrapper" style="flex: 1; position: relative; display: flex; justify-content: center; align-items: center;"></div>
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <div id="human-body-wrapper" style="width: 100%; height: 100%; position: relative; display: flex; justify-content: center; align-items: center;"></div>
+                    <div id="anatomy-legend" style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;"></div>
+                </div>
                 
                 <!-- Dataset Info Panel (Hidden by default) -->
                 <div id="dataset-info-panel">

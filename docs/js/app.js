@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const datasetTitle = document.getElementById("dataset-info-title");
     const datasetCount = document.getElementById("dataset-info-count");
     const datasetContent = document.getElementById("dataset-info-content");
+    const legendContainer = document.getElementById("anatomy-legend");
 
     if(!modal || !openBtn || !closeBtn) return;
 
@@ -79,10 +80,34 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             };
             
-            // Force select them so they get leader lines (leader lines only show for selected by default)
-            Object.keys(heatmapData).forEach(id => {
-                if(body.getOrgan(id)) body.toggle(id, true);
-            });
+            // Add Legend
+            if (legendContainer) {
+                legendContainer.innerHTML = "";
+                Object.keys(heatmapData).forEach(organId => {
+                    const info = heatmapData[organId];
+                    const organName = organId.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase());
+                    
+                    const item = document.createElement("div");
+                    item.style.display = "flex";
+                    item.style.alignItems = "center";
+                    item.style.gap = "0.5rem";
+                    item.style.fontSize = "0.9rem";
+                    item.style.color = "#475569";
+                    
+                    const colorBox = document.createElement("div");
+                    colorBox.style.width = "16px";
+                    colorBox.style.height = "16px";
+                    colorBox.style.borderRadius = "4px";
+                    colorBox.style.backgroundColor = info.color;
+                    
+                    const label = document.createElement("span");
+                    label.textContent = organName;
+                    
+                    item.appendChild(colorBox);
+                    item.appendChild(label);
+                    legendContainer.appendChild(item);
+                });
+            }
             
             bodyInitialized = true;
         }

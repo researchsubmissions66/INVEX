@@ -117,7 +117,7 @@ export class HumanBody {
         });
         
         window.addEventListener("resize", throttle(() => {
-            this.leaderLines.redraw(this.getSelected());
+            this.leaderLines.redraw(this.getActiveOrgans());
         }, 100));
     }
     
@@ -127,6 +127,10 @@ export class HumanBody {
     
     getAllOrgans() {
         return Array.from(this.organs.values());
+    }
+    
+    getActiveOrgans() {
+        return this.getAllOrgans().filter(o => this.activeOrgans && this.activeOrgans.includes(o.id));
     }
     
     getSelected() {
@@ -197,6 +201,7 @@ export class HumanBody {
     
     setHeatmap(data) {
         this.heatmap.apply(this, data);
+        this.activeOrgans = Object.keys(data);
         
         // Disable pointer events for organs not covered by the datasets
         this.getAllOrgans().forEach(organ => {
@@ -206,6 +211,8 @@ export class HumanBody {
                 organ.node.style.pointerEvents = "auto";
             }
         });
+        
+        this.leaderLines.redraw(this.getActiveOrgans());
     }
     
     setTheme(themeName) {
@@ -245,7 +252,6 @@ export class HumanBody {
     }
     
     _dispatchSelectionChange() {
-        this.leaderLines.redraw(this.getSelected());
         if (this.onSelectionChange) {
             this.onSelectionChange(this.getSelected());
         }
