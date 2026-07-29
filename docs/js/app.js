@@ -50,6 +50,21 @@ document.addEventListener("DOMContentLoaded", async () => {
                     item.style.gap = "0.5rem";
                     item.style.fontSize = "0.9rem";
                     item.style.color = "#475569";
+                    item.style.cursor = "pointer";
+                    item.style.transition = "transform 0.1s";
+                    
+                    item.addEventListener("mouseenter", () => {
+                        item.style.transform = "scale(1.05)";
+                        body.highlight(organId);
+                    });
+                    item.addEventListener("mouseleave", () => {
+                        item.style.transform = "scale(1)";
+                        body.getOrgan(organId)?.unhighlight();
+                    });
+                    item.addEventListener("click", () => {
+                        body.select(organId);
+                        body.flash(organId);
+                    });
                     
                     const colorBox = document.createElement("div");
                     colorBox.style.width = "16px";
