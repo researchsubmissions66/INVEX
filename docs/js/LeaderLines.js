@@ -46,7 +46,9 @@ export class LeaderLines {
         
         selectedOrgans.forEach(organ => {
             if (organ.isVisible()) {
-                const rect = organ.node.getBoundingClientRect();
+                // Find the first actual path to avoid pointing to the empty center of multi-part organs (like lungs/kidneys)
+                const targetNode = organ.node.tagName.toLowerCase() === 'path' ? organ.node : (organ.node.querySelector('path') || organ.node);
+                const rect = targetNode.getBoundingClientRect();
                 const centerX = (rect.left + rect.right) / 2 - containerRect.left;
                 const centerY = (rect.top + rect.bottom) / 2 - containerRect.top;
                 
