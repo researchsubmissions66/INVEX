@@ -115,10 +115,6 @@ export class HumanBody {
                 }
             }
         });
-        
-        window.addEventListener("resize", throttle(() => {
-            this.leaderLines.redraw(this.getActiveOrgans());
-        }, 100));
     }
     
     getOrgan(id) {
@@ -211,8 +207,6 @@ export class HumanBody {
                 organ.node.style.pointerEvents = "auto";
             }
         });
-        
-        this.leaderLines.redraw(this.getActiveOrgans());
     }
     
     setTheme(themeName) {
@@ -234,7 +228,6 @@ export class HumanBody {
             }
         });
         
-        this.leaderLines.redraw(this.getSelected());
         this._dispatchSelectionChange();
     }
     
