@@ -97,6 +97,61 @@
             max-width: 500px;
             position: relative;
         }
+        
+        /* New styling for elegant close button and side panel */
+        .close-anatomy-btn {
+            background: #f1f5f9;
+            color: #64748b;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .close-anatomy-btn:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        
+        #dataset-info-panel {
+            width: 380px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            display: none;
+            flex-direction: column;
+            overflow-y: auto;
+            backdrop-filter: blur(8px);
+        }
+        .dataset-item {
+            margin-bottom: 1.25rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .dataset-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .dataset-title {
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0 0 0.5rem 0;
+            font-size: 1.05rem;
+        }
+        .dataset-ref {
+            font-size: 0.85rem;
+            color: #475569;
+            line-height: 1.4;
+            margin: 0;
+        }
     </style>
 
 </head>
@@ -243,22 +298,22 @@
     </section>
     <!-- Anatomy Modal -->
     <div id="anatomyModal" class="anatomy-modal">
-        <div class="anatomy-modal-content" style="background-color: #f1f5f9;">
+        <div class="anatomy-modal-content">
             <div class="anatomy-modal-header">
                 <h3 style="margin: 0;">Anatomical Diversity in INVEX</h3>
-                <button id="closeAnatomyBtn" class="close-anatomy-btn">&times;</button>
+                <button id="closeAnatomyBtn" class="close-anatomy-btn"><i class="fas fa-times"></i></button>
             </div>
             <div class="anatomy-modal-body" style="display: flex; gap: 2rem; align-items: stretch; height: 600px;">
                 <div id="human-body-wrapper" style="flex: 1; position: relative; display: flex; justify-content: center; align-items: center;"></div>
                 
                 <!-- Dataset Info Panel (Hidden by default) -->
-                <div id="dataset-info-panel" style="width: 380px; background: white; border-radius: 8px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); padding: 1.5rem; display: none; flex-direction: column; overflow-y: auto;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; margin-bottom: 1rem;">
-                        <h3 id="dataset-info-title" style="margin: 0; font-size: 1.25rem; color: #1e293b;">Dataset Details</h3>
-                        <span id="dataset-info-count" style="background: #e2e8f0; color: #475569; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.85rem; font-weight: 600;"></span>
+                <div id="dataset-info-panel">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.75rem; margin-bottom: 1rem;">
+                        <h3 id="dataset-info-title" style="margin: 0; font-size: 1.15rem; color: #1e293b; font-weight: 700;">Dataset Details</h3>
+                        <span id="dataset-info-count" style="background: #f1f5f9; color: #475569; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;"></span>
                     </div>
-                    <div id="dataset-info-content" style="font-size: 0.9rem; line-height: 1.5; color: #334155;">
-                        <!-- Markdown content injected here -->
+                    <div id="dataset-info-content">
+                        <!-- Content injected here -->
                     </div>
                 </div>
             </div>

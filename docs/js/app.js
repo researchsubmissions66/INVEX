@@ -61,23 +61,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                         
                         let htmlContent = "";
                         datasets.forEach(ds => {
-                            htmlContent += `<div style="margin-bottom: 2rem;">`;
-                            if (window.marked) {
-                                htmlContent += marked.parse(ds.note);
-                            } else {
-                                htmlContent += `<pre style="white-space: pre-wrap; font-family: inherit;">${ds.note}</pre>`;
-                            }
-                            htmlContent += `</div>`;
+                            htmlContent += `
+                            <div class="dataset-item">
+                                <h4 class="dataset-title">${ds.dataset}</h4>
+                                <p class="dataset-ref"><i class="fas fa-book" style="margin-right: 0.4rem; color: #94a3b8;"></i> ${ds.reference}</p>
+                            </div>`;
                         });
-                        
-                        // Style markdown elements (tables, etc.) inside the container
-                        htmlContent = htmlContent.replace(/<table>/g, '<table style="width: 100%; border-collapse: collapse; margin-bottom: 1rem;">');
-                        htmlContent = htmlContent.replace(/<th>/g, '<th style="border-bottom: 2px solid #cbd5e1; padding: 0.5rem; text-align: left;">');
-                        htmlContent = htmlContent.replace(/<td>/g, '<td style="border-bottom: 1px solid #e2e8f0; padding: 0.5rem;">');
-                        htmlContent = htmlContent.replace(/<h1>|<h2>|<h3>|<h4>/g, match => {
-                            return match.substring(0, match.length - 1) + ' style="margin-top: 1rem; margin-bottom: 0.5rem; color: #0f172a;">';
-                        });
-
                         datasetContent.innerHTML = htmlContent;
                     } else {
                         datasetPanel.style.display = "flex";
