@@ -73,8 +73,6 @@ def run():
     hit3 = len(set(m3) & true3)
     reg1 = vo.auc.max() - vo.auc.loc[c.idxmax()]
     reg3 = vo.auc.max() - vo.auc.loc[c.sort_values(ascending=False).index[:3]].max()
-    k80 = next(k for k in ks if regret_curve(c, vo.auc)[k-1] <= 0.2 * (vo.auc.max() - vo.auc.min())) \
-        if True else N
     print(f"[SAVED] {p} + results/topk_regret.csv\n")
     print("=== HEADLINE (vision-only, combined metric) ===")
     print(f"  * The metric's top-3 contains {hit3} of the 3 truly-best encoders ({m3}).")

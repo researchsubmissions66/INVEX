@@ -22,7 +22,7 @@ def run():
     lb.to_csv(os.path.join(OUT, "leaderboard.csv"))
     rho = spearmanr(T["combined"], T["auc"])[0]; tau = kendalltau(T["combined"], T["auc"])[0]
 
-    fig, ax = plt.subplots(figsize=(6.6, 8)); yL, yR = 0.0, 0.0
+    fig, ax = plt.subplots(figsize=(6.6, 8))
     posL = {e: N - m_rank[e] for e in T.index}          # metric column (left)
     posR = {e: N - a_rank[e] for e in T.index}          # oracle column (right)
     for e in T.index:

@@ -12,7 +12,7 @@ Per dataset (single native resolution): label-free Mutual-kNN CONSENSUS per enco
 Outputs: phase15_scores.csv, phase15_reproducibility.csv, plot_phase15_family.png
 Resumable: appends per-dataset; stores each dataset's 28x28 agreement matrix for LOFO.
 """
-import os, sys, time, glob, itertools, json
+import os, sys, time, glob, itertools
 import numpy as np, pandas as pd, h5py
 from scipy.stats import spearmanr
 from sklearn.preprocessing import StandardScaler, LabelEncoder

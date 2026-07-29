@@ -26,7 +26,7 @@ from PIL import Image, ImageFile
 from torch.utils.data import Dataset, DataLoader
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import normalize
-ImageFile.LOAD_TRUNCATED_IMAGES = True
+
 sys.path.insert(0, "/path/to/external")               # external: the patch-extraction module
 from extract_patches import center_square, read_metadata, DEF_BASE
 from utils import augment as ap

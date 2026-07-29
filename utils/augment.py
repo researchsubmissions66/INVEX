@@ -25,15 +25,6 @@ def stain_hed(img, rng, sigma=0.06):
     return Image.fromarray((np.clip(rgb, 0, 1) * 255).astype("uint8"))
 
 
-def rotate90(img, rng):
-    return img.rotate(int(rng.choice([90, 180, 270])), expand=False)
-
-
-def blur(img, rng):
-    return img.filter(ImageFilter.GaussianBlur(radius=float(rng.uniform(0.7, 1.3))))
-
-
-AUGS = {"stain_hed": stain_hed, "rotate90": rotate90, "blur": blur}
 
 
 # ---- EXACT biology-preserving symmetries of tissue (lossless; no canonical orientation) ----
