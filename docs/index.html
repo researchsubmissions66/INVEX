@@ -7,9 +7,15 @@
     <title>INVEX: Exploiting Tissue Symmetry and Representational Discriminability to Rank Pathology Foundation Models Without Labels</title>
     <meta name="description" content="A purely intrinsic, label-free score to predict downstream performance across pathology foundation models.">
     <link rel="stylesheet" href="style.css">
-    <!-- Font Awesome for icons -->
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- Academicons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- MathJax for LaTeX rendering -->
     <script>
         window.MathJax = {
@@ -237,13 +243,24 @@
     </section>
     <!-- Anatomy Modal -->
     <div id="anatomyModal" class="anatomy-modal">
-        <div class="anatomy-modal-content">
+        <div class="anatomy-modal-content" style="background-color: #f1f5f9;">
             <div class="anatomy-modal-header">
                 <h3 style="margin: 0;">Anatomical Diversity in INVEX</h3>
                 <button id="closeAnatomyBtn" class="close-anatomy-btn">&times;</button>
             </div>
-            <div class="anatomy-modal-body">
-                <div id="human-body-wrapper" style="width: 100%; height: 600px; position: relative; display: flex; justify-content: center; align-items: center;"></div>
+            <div class="anatomy-modal-body" style="display: flex; gap: 2rem; align-items: stretch; height: 600px;">
+                <div id="human-body-wrapper" style="flex: 1; position: relative; display: flex; justify-content: center; align-items: center;"></div>
+                
+                <!-- Dataset Info Panel (Hidden by default) -->
+                <div id="dataset-info-panel" style="width: 380px; background: white; border-radius: 8px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); padding: 1.5rem; display: none; flex-direction: column; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; margin-bottom: 1rem;">
+                        <h3 id="dataset-info-title" style="margin: 0; font-size: 1.25rem; color: #1e293b;">Dataset Details</h3>
+                        <span id="dataset-info-count" style="background: #e2e8f0; color: #475569; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.85rem; font-weight: 600;"></span>
+                    </div>
+                    <div id="dataset-info-content" style="font-size: 0.9rem; line-height: 1.5; color: #334155;">
+                        <!-- Markdown content injected here -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
