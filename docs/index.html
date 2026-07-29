@@ -198,7 +198,10 @@
     </section>
 
     <section id="datasets" class="animate-up" style="padding: 2rem 2rem 3rem; max-width: 1100px; margin: 0 auto;">
-        <h2 class="section-title" style="text-align: left; margin-bottom: 2rem;">16 Patch-Level Benchmark Datasets</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h2 class="section-title" style="text-align: left; margin: 0;">16 Patch-Level Benchmark Datasets</h2>
+            <button id="openAnatomyBtn" class="btn btn-primary" style="padding: 0.8rem 1.5rem; font-size: 1rem;"><i class="fas fa-child" style="margin-right: 0.5rem;"></i> Showcase Anatomical Diversity</button>
+        </div>
         <div class="table-container" style="background: white; border-radius: 16px; box-shadow: var(--shadow-md); overflow-y: auto; max-height: 500px; border: 1px solid #e2e8f0;">
             <table style="width: 100%; border-collapse: collapse; text-align: left;">
                 <thead style="position: sticky; top: 0; z-index: 10;">
@@ -232,6 +235,19 @@
             </table>
         </div>
     </section>
+    <!-- Anatomy Modal -->
+    <div id="anatomyModal" class="anatomy-modal">
+        <div class="anatomy-modal-content">
+            <div class="anatomy-modal-header">
+                <h3 style="margin: 0;">Anatomical Diversity in INVEX</h3>
+                <button id="closeAnatomyBtn" class="close-anatomy-btn">&times;</button>
+            </div>
+            <div class="anatomy-modal-body">
+                <div id="anatomy-container" style="width: 100%; height: 600px; position: relative; display: flex; justify-content: center; align-items: center;"></div>
+            </div>
+        </div>
+    </div>
+
 
     <footer style="background: var(--dark); color: white; text-align: center; padding: 3rem 2rem; margin-top: 4rem;">
         <p style="opacity: 0.7;">&copy; 2026 Anonymous Submission. All rights reserved.</p>
