@@ -1,18 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INVEX: Exploiting Tissue Symmetry and Representational Discriminability to Rank Pathology Foundation Models Without Labels</title>
+    <title>INVEX: Exploiting Tissue Symmetry and Representational Discriminability</title>
     <meta name="description" content="A purely intrinsic, label-free score to predict downstream performance across pathology foundation models.">
     <link rel="stylesheet" href="style.css">
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- Marked.js for Markdown parsing -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Academicons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
     
@@ -33,96 +28,19 @@
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-    <!-- Anatomy Viewer Styles -->
-    <link rel="stylesheet" href="css/themes.css">
-    <link rel="stylesheet" href="css/tooltip.css">
     <style>
-        .human-organ {
-            fill: #f1f5f9;
-            stroke: #94a3b8;
-            stroke-width: 1px;
-            cursor: pointer;
-            transition: fill 0.2s ease, stroke 0.2s ease, filter 0.2s ease;
-            outline: none;
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
-        .human-organ:hover { filter: drop-shadow(0 0 4px rgba(0,0,0,0.3)); }
-        
-        .anatomy-modal {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(4px);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        .anatomy-modal.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .anatomy-modal-content {
-            background: #ffffff;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 800px;
-            height: 90vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
-            position: relative;
-        }
-        .anatomy-modal-header {
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .anatomy-modal-body {
-            flex: 1;
-            padding: 2rem;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        #human-body-wrapper {
-            width: 100%;
-            height: 100%;
-            max-width: 500px;
-            position: relative;
-        }
-        
-        /* New styling for elegant close button and side panel */
-        .close-anatomy-btn {
-            background: #f1f5f9;
-            color: #64748b;
-            border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s;
-        }
-        .close-anatomy-btn:hover {
-            background: #e2e8f0;
-            color: #0f172a;
-        }
-        
     </style>
-
+    
 </head>
 
 <body>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scroll-progress"></div>
 
     <nav>
         <div class="nav-container">
@@ -131,22 +49,24 @@
                 <a href="#key-idea">Methodology</a>
                 <a href="#encoders">Evaluated Encoders</a>
                 <a href="#datasets">Datasets</a>
+                <a href="https://github.com/researchsubmissions66/INVEX" target="_blank">GitHub</a>
             </div>
         </div>
     </nav>
 
-    <header class="hero" style="min-height: 70vh; display: flex; flex-direction: column; justify-content: center;">
-
+    <header class="hero" style="min-height: 80vh; display: flex; flex-direction: column; justify-content: center;">
         <div class="logo-container animate-up" style="margin-bottom: 3rem; text-align: center;">
-            <img src="logo.png" alt="INVEX Logo" style="max-height: 480px; width: auto;">
+            <img src="logo.png" alt="INVEX Logo" class="floating-logo" style="max-height: 400px; width: auto;">
         </div>
         <h1 class="animate-up" style="max-width: 1000px; margin-left: auto; margin-right: auto;">
             INVEX: Exploiting Tissue Symmetry and Representational Discriminability to Rank Pathology Foundation Models Without Labels
         </h1>
 
-
-        <div class="affiliations animate-up delay-1">
-            <p style="margin-top: 1.5rem; font-weight: 600; color: var(--secondary); font-size: 1.2rem;">Submitted to WACV 2027</p>
+        <div class="affiliations animate-up delay-1" style="margin-top: 1.5rem; font-size: 1.35rem; font-weight: 500; display: flex; justify-content: center; gap: 1.5rem; color: #1e293b;">
+            <span>Submitted to WACV 2027</span>
+        </div>
+        <div class="affiliations animate-up delay-1" style="margin-top: 0.8rem; font-size: 1.15rem; color: #64748b; display: flex; justify-content: center;">
+            <span>Anonymous Submission</span>
         </div>
 
         <div class="hero-buttons animate-up delay-2" style="margin-top: 3rem;">
@@ -156,135 +76,560 @@
         </div>
     </header>
 
-    <section id="key-idea" class="animate-up" style="padding: 2rem 2rem; background: var(--bg-light); border-bottom: 1px solid #eee;">
-        <div style="max-width: 1100px; margin: 0 auto;">
-            <h2 class="section-title" style="text-align: left; margin-bottom: 2rem;">The Key Idea</h2>
-            <div class="math-detail" style="margin-top: 0; padding-top: 0; border-top: none;">
-                <p style="font-size: 1.1rem; color: var(--text-main); line-height: 1.8; text-align: left; margin: 0 auto; max-width: 1000px;">
-                    <span style="display: block; margin-bottom: 1.5rem;">
-                        Foundation models for computational pathology are currently evaluated via downstream, supervised linear probing or kNN classification on specific cohorts. <strong>INVEX</strong> introduces a purely intrinsic, zero-shot evaluation framework requiring no labels and no fine-tuning.
-                    </span>
-                    <span style="display: block; margin-bottom: 1rem; font-size: 1.15rem;"><strong>The Multi-Stage Pipeline:</strong></span>
-                    <span style="display: block; margin-bottom: 1rem;"><strong>1. Invariance (Rotational Consistency):</strong> Because histology tissue has no canonical orientation, a good encoder must map rotated views of the same tissue into the exact same region of the embedding space. We measure how well the neighborhood structure is preserved under dihedral rotations (90°, 180°, 270°) using Retention@10.</span>
-                    <span style="display: block; margin-bottom: 1rem;"><strong>2. Expressiveness (Feature Diversity):</strong> We compute the effective rank and uniformity of the clean embedding cloud. A powerful encoder utilizes many dimensions to ensure distinct biological features land in separate areas of the latent space.</span>
-                    <span style="display: block; margin-bottom: 1.5rem;"><strong>3. Combined Score:</strong> We model directions with von Mises–Fisher (vMF) distributions on the unit hypersphere. The quality likelihood-ratio \(Q_{\text{vMF}} = \log \kappa_{\text{nuis}} - \log \kappa_{\text{bio}}\) captures both invariance and expressiveness to produce the final INVEX rank.</span>
-                </p>
-            </div>
-        </div>
-    </section>
+    <!-- Headline metrics -->
+    <svg width="0" height="0" style="position:absolute">
+      <defs>
+        <linearGradient id="grad-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#3b82f6"/>
+          <stop offset="100%" stop-color="#6366f1"/>
+        </linearGradient>
+        <linearGradient id="grad-violet" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#7c3aed"/>
+          <stop offset="100%" stop-color="#a78bfa"/>
+        </linearGradient>
+        <linearGradient id="grad-teal" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#0d9488"/>
+          <stop offset="100%" stop-color="#2dd4bf"/>
+        </linearGradient>
+        <linearGradient id="grad-rose" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#e11d48"/>
+          <stop offset="100%" stop-color="#fb7185"/>
+        </linearGradient>
+        <linearGradient id="grad-amber" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#d97706"/>
+          <stop offset="100%" stop-color="#fbbf24"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="metrics-strip">
 
-    <section id="encoders" class="animate-up" style="padding: 2rem 2rem; max-width: 1100px; margin: 0 auto;">
-        <h2 class="section-title" style="text-align: left; margin-bottom: 2rem;">28 Evaluated Foundation Models</h2>
+      <!-- 28 Evaluated Encoders -->
+      <div class="metric-card">
+        <div class="metric-icon-wrap" style="background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(99,102,241,0.08));">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="5" r="2.5" stroke="url(#grad-blue)" stroke-width="1.8"/>
+            <circle cx="5" cy="19" r="2.5" stroke="url(#grad-blue)" stroke-width="1.8"/>
+            <circle cx="19" cy="19" r="2.5" stroke="url(#grad-blue)" stroke-width="1.8"/>
+            <path d="M12 7.5V12M12 12L6.5 16.5M12 12L17.5 16.5" stroke="url(#grad-blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="metric-num">28</div>
+        <div class="metric-label">Evaluated Encoders</div>
+      </div>
 
-        <p style="margin-bottom: 2.5rem; color: var(--text-muted); font-size: 1.1rem; max-width: 800px;">
-            INVEX systematically audits the top pathology foundation models in the field.
-        </p>
+      <!-- 16 Datasets -->
+      <div class="metric-card">
+        <div class="metric-icon-wrap" style="background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(52,211,153,0.08));">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="16" height="16" rx="2" stroke="url(#grad-teal)" stroke-width="2"/>
+            <path d="M4 12H20M12 4V20" stroke="url(#grad-teal)" stroke-width="2" stroke-opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="metric-num">16</div>
+        <div class="metric-label">Benchmark Datasets</div>
+      </div>
 
-        <div class="table-container" style="background: white; border-radius: 16px; box-shadow: var(--shadow-md); overflow-y: auto; max-height: 500px; border: 1px solid #e2e8f0; margin-bottom: 4rem;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                <thead style="position: sticky; top: 0; z-index: 10;">
-                    <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
-                        <th style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--dark);">Encoder</th>
-                        <th style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--dark);">Backbone</th>
-                        <th style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--dark);">Training</th>
-                        <th style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--dark);">Dim</th>
-                    <th style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--dark); text-align: center;">Paper</th><th style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--dark); text-align: center;">Code/Model</th></tr>
-                </thead>
-                <tbody>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>uni_v1</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-L/16</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">DINOv2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">1024</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://www.nature.com/articles/s41591-024-02857-3" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/mahmoodlab/UNI" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>uni_v2</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-H/14</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">DINOv2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">1536</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://www.nature.com/articles/s41591-024-02857-3" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/mahmoodlab/UNI" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>virchow</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-H/14</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">DINOv2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">2560</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://arxiv.org/abs/2309.07778" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://huggingface.co/paige-ai/Virchow" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face" style="height: 1.2em; vertical-align: text-bottom;"></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>virchow2</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-H/14</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">DINOv2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">2560</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://arxiv.org/abs/2408.00738" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://huggingface.co/paige-ai/Virchow2" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face" style="height: 1.2em; vertical-align: text-bottom;"></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>gigapath</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-g/14</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">DINOv2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">1536</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://www.nature.com/articles/s41586-024-07441-w" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/prov-gigapath/prov-gigapath" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>hoptimus0</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-g/14</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">DINOv2-style</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">1536</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://arxiv.org/abs/2404.14814" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/bioptimus/releases/tree/main/models/h-optimus/v0" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>hoptimus1</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-g/14</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">DINOv2-style</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">1536</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://arxiv.org/abs/2404.14814" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/bioptimus/releases/tree/main/models/h-optimus/v0" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>phikon</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-B/16</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">iBOT</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">768</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://www.medrxiv.org/content/10.1101/2023.07.21.23292757v2" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://huggingface.co/owkin/phikon" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face" style="height: 1.2em; vertical-align: text-bottom;"></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>phikon_v2</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-L/16</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">DINOv2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">1024</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://www.medrxiv.org/content/10.1101/2023.07.21.23292757v2" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://huggingface.co/owkin/phikon" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face" style="height: 1.2em; vertical-align: text-bottom;"></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>hibou_l</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-L/14</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">DINOv2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">1024</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://arxiv.org/abs/2406.05074" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://huggingface.co/histai/hibou-L" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face" style="height: 1.2em; vertical-align: text-bottom;"></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>gpfm</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-L</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Distillation</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">1024</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><span style="color: #cbd5e1;">-</span></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://huggingface.co/majiabo/GPFM" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face" style="height: 1.2em; vertical-align: text-bottom;"></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>h0-mini</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-B/14</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Distillation</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">768</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://arxiv.org/abs/2404.14814" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/bioptimus/releases/tree/main/models/h-optimus/v0" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>midnight12k</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-L/14</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">DINOv2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">1536</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><span style="color: #cbd5e1;">-</span></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/kaiko-ai/Midnight" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>openmidnight</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-L/14</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">DINOv2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">1536</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><span style="color: #cbd5e1;">-</span></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/kaiko-ai/Midnight" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>kaiko-vitb8</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-B/8</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">DINO</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">768</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://arxiv.org/abs/2405.00000" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/kaiko-ai" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>kaiko-vitb16</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-B/16</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">DINO</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">768</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://arxiv.org/abs/2405.00000" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/kaiko-ai" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>kaiko-vits8</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-S/8</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">DINO</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">384</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://arxiv.org/abs/2405.00000" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/kaiko-ai" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>kaiko-vits16</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-S/16</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">DINO</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">384</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://arxiv.org/abs/2405.00000" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/kaiko-ai" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>kaiko-vitl14</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-L/14</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">DINOv2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">1024</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://arxiv.org/abs/2405.00000" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/kaiko-ai" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>lunit-vits8</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-S/8</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">DINO</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">384</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://arxiv.org/abs/2212.04690" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/lunit-io/lunit-pathology" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>genbio-pathfm</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-L</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">SSL</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">4608</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><span style="color: #cbd5e1;">-</span></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://huggingface.co/genbio-ai/genbio-pathfm" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face" style="height: 1.2em; vertical-align: text-bottom;"></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>conch_v1</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-B/16</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Vision-Language</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">512</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://www.nature.com/articles/s41591-024-02856-4" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/mahmoodlab/CONCH" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>conch_v15</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Vision-Language</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">768</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://www.nature.com/articles/s41591-024-02856-4" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/mahmoodlab/CONCH" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>musk</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ViT-L</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Vision-Language</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">1024</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://www.nature.com/articles/s41586-024-08378-w" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://huggingface.co/xiangjx/musk" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face" style="height: 1.2em; vertical-align: text-bottom;"></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>ctranspath</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">CNN+Swin-T</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">SRCL Contrastive</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">768</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://www.sciencedirect.com/science/article/pii/S1361841522002043" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="fas fa-file-pdf"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/Xiyue-Wang/TransPath" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>resnet50</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ResNet-50</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">ImageNet</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">1024</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://arxiv.org/abs/1512.03385" target="_blank" style="color: #b31b1b; font-size: 1.3rem; transition: color 0.2s;" title="Paper"><i class="ai ai-arxiv"></i></a></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><span style="color: #cbd5e1;">-</span></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>gemma4-e4b</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Gemma-3n</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">General VLM</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">768</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><span style="color: #cbd5e1;">-</span></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://huggingface.co/google/gemma-4-E4B-it" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face" style="height: 1.2em; vertical-align: text-bottom;"></a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;"><code>gemma4-26b</code></td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Gemma</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">General VLM</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">1152</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><span style="color: #cbd5e1;">-</span></td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://huggingface.co/google/gemma-4-26B-A4B-it" target="_blank" style="color: #333; font-size: 1.3rem; transition: color 0.2s;" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face" style="height: 1.2em; vertical-align: text-bottom;"></a></td></tr>
-                </tbody>
-            </table>
+      <!-- 1.2M+ Patches -->
+      <div class="metric-card">
+        <div class="metric-icon-wrap" style="background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(167,139,250,0.08));">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="4" width="18" height="4" rx="1.5" fill="url(#grad-violet)" opacity="0.25"/>
+            <rect x="3" y="10" width="18" height="4" rx="1.5" fill="url(#grad-violet)" opacity="0.5"/>
+            <rect x="3" y="16" width="18" height="4" rx="1.5" fill="url(#grad-violet)" opacity="0.85"/>
+            <path d="M7 6H15M7 12H13M7 18H11" stroke="url(#grad-violet)" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
         </div>
-    </section>
+        <div class="metric-num">1.2M+</div>
+        <div class="metric-label">Processed Patches</div>
+      </div>
+      
+      <!-- 3 Dihedral Rotations -->
+      <div class="metric-card">
+        <div class="metric-icon-wrap" style="background: linear-gradient(135deg, rgba(225,29,72,0.12), rgba(251,113,133,0.08));">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2v20m10-10H2" stroke="url(#grad-rose)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M19 19L5 5m14 0L5 19" stroke="url(#grad-rose)" stroke-width="2" stroke-linecap="round" stroke-opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="metric-num">3</div>
+        <div class="metric-label">Dihedral Rotations</div>
+      </div>
 
-    <section id="datasets" class="animate-up" style="padding: 2rem 2rem 3rem; max-width: 1100px; margin: 0 auto;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-            <h2 class="section-title" style="text-align: left; margin: 0;">16 Patch-Level Benchmark Datasets</h2>
-            <button id="openAnatomyBtn" class="btn btn-primary" style="padding: 0.8rem 1.5rem; font-size: 1rem;"><i class="fas fa-child" style="margin-right: 0.5rem;"></i> Showcase Anatomical Diversity</button>
+      <!-- 2 Metrics -->
+      <div class="metric-card">
+        <div class="metric-icon-wrap" style="background: linear-gradient(135deg, rgba(217,119,6,0.12), rgba(251,191,36,0.08));">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="11" cy="11" r="6" stroke="url(#grad-amber)" stroke-width="2"/>
+            <path d="M15.5 15.5L20 20" stroke="url(#grad-amber)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
         </div>
-        <div class="table-container" style="background: white; border-radius: 16px; box-shadow: var(--shadow-md); overflow-y: auto; max-height: 500px; border: 1px solid #e2e8f0;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                <thead style="position: sticky; top: 0; z-index: 10;">
-                    <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
-                        <th style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--dark);">Dataset</th>
-                        <th style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--dark);">Organ</th>
-                        <th style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--dark);">Task</th>
-                        <th style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--dark);">Classes</th>
-                        <th style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--dark);">Patches</th>
-                        <th style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--dark);">Mag</th>
-                        <th style="padding: 1.25rem 1.5rem; font-weight: 600; color: var(--dark); text-align: center;">Source</th></tr>
-                </thead>
-                <tbody>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;">MHIST</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Colorectal</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Polyp type</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">3,152</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">20×</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://bmirds.github.io/MHIST/" target="_blank" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;">CHAOYANG</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Colon</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Tissue type</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">4</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">6,160</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">20×</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://bupt-ai-cz.github.io/HSA-NRL/" target="_blank" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;">WSSS4LUAD</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Lung</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Tissue type</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">3</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">4,693</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">40×</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://wsss4luad.grand-challenge.org/" target="_blank" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;">NCT-CRC-VAL</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Colorectal</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Tissue type</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">9</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">7,180</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">20×</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://zenodo.org/records/1214456" target="_blank" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;">BreaKHis</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Breast</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Benign/malignant</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">7,909</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Multi</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://web.inf.ufpr.br/vri/databases/breast-cancer-histopathological-database-breakhis/" target="_blank" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;">LC25000_COLON</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Colon</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Tumor benign/adeno</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">10,000</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">20×</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/tampapath/lung_colon_image_set" target="_blank" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;">SICAPv2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Prostate</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Gleason grading</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">4</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">12,081</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">10×</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://data.mendeley.com/datasets/9xxm58dvs3/2" target="_blank" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;">LC25000_LUNG</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Lung</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Tumor subtype</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">3</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">15,000</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">20×</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/tampapath/lung_colon_image_set" target="_blank" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;">CCRCC_Lymphocyte</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Kidney (ccRCC)</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Immune vs tumor</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">25,095</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">20×</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://zenodo.org/records/7898308" target="_blank" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;">CCRCC_Tissue</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Kidney (ccRCC)</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Tissue type</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">6</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">52,713</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">20×</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://zenodo.org/records/7898308" target="_blank" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;">digestPath</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Colon/GI</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Cancerous/non</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">70,379</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">20×</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://digestpath2019.grand-challenge.org/" target="_blank" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;">NCT-CRC</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Colorectal</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Tissue type (train)</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">9</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">107,180</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">20×</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://zenodo.org/records/1214456" target="_blank" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;">Kather-MSI-CRC</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Colorectal</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">MSI/MSS</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">192,312</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">20×</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://zenodo.org/records/2530835" target="_blank" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;">Kather-MSI-STAD</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Stomach</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">MSI/MSS</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">218,578</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">20×</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://zenodo.org/records/2530835" target="_blank" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;">TCGA-TILs</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Pan-cancer</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">TIL detection</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">227,699</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">20×</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://doi.org/10.5281/zenodo.6604094" target="_blank" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;"><td style="padding: 1.25rem 1.5rem; font-weight: 600;">PCam</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Lymph node</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">Metastasis</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">2</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">327,680</td><td style="padding: 1.25rem 1.5rem; color: var(--text-muted);">10×</td><td style="padding: 1.25rem 1.5rem; text-align: center;"><a href="https://github.com/basveeling/pcam" target="_blank" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
-    <!-- Anatomy Modal -->
-    <div id="anatomyModal" class="anatomy-modal">
-        <div class="anatomy-modal-content">
-            <div class="anatomy-modal-header">
-                <h3 style="margin: 0;">Anatomical Diversity in INVEX</h3>
-                <button id="closeAnatomyBtn" class="close-anatomy-btn"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="anatomy-modal-body" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 600px;">
-                <div id="human-body-wrapper" style="width: 100%; height: 100%; position: relative; display: flex; justify-content: center; align-items: center;"></div>
-                <div id="anatomy-legend" style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;"></div>
-            </div>
-        </div>
+        <div class="metric-num" style="font-size: 1.45rem;">Invariance & Expressiveness</div>
+        <div class="metric-label">Core Dimensions</div>
+      </div>
+
     </div>
 
+    <section id="key-idea" class="animate-up" style="padding: 3rem 2rem; background: var(--bg-light); border-bottom: 1px solid #eee;">
+        <div style="max-width: 1100px; margin: 0 auto;">
+            <h2 class="section-title">The Key Idea</h2>
+            <p class="section-desc" style="max-width: 750px; margin-bottom: 3rem;">
+                Evaluating pathology foundation models purely intrinsically, without labels or fine-tuning.
+            </p>
+
+            <!-- Central hypothesis callout -->
+            <div style="background: linear-gradient(135deg, rgba(59,130,246,0.06), rgba(139,92,246,0.06)); border: 1px solid rgba(59,130,246,0.15); border-radius: 16px; padding: 2.5rem 3rem; margin-bottom: 3rem; max-width: 900px; margin-left: auto; margin-right: auto; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);">
+                <h3 style="font-size: 1.35rem; font-weight: 700; color: var(--dark); margin-top: 0; margin-bottom: 1.5rem; text-align: center;">
+                    <span style="background: linear-gradient(120deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;">Central Hypothesis</span>
+                </h3>
+                <ul style="font-size: 1.1rem; color: var(--text-main); margin: 0; padding-left: 1.5rem; line-height: 1.8; list-style-type: none;">
+                    <li style="margin-bottom: 1rem; position: relative;"><i class="fas fa-check-circle" style="color: #3b82f6; position: absolute; left: -1.8rem; top: 0.35rem; font-size: 1.1rem;"></i> <strong>Robust to Variations:</strong> A strong pathology representation must handle variations that don't change the underlying tissue morphology.</li>
+                    <li style="margin-bottom: 1rem; position: relative;"><i class="fas fa-microscope" style="color: #8b5cf6; position: absolute; left: -1.8rem; top: 0.35rem; font-size: 1.1rem;"></i> <strong>Arbitrary Orientations:</strong> Histopathology images inherently exhibit arbitrary orientations due to tissue prep and scanning, but their biological semantics remain unchanged.</li>
+                    <li style="margin-bottom: 1rem; position: relative;"><i class="fas fa-sync-alt" style="color: #0d9488; position: absolute; left: -1.8rem; top: 0.35rem; font-size: 1.1rem;"></i> <strong>Consistent Embeddings:</strong> An effective model should produce consistent (invariant) embeddings for rotated views of the exact same tissue.</li>
+                    <li style="position: relative;"><i class="fas fa-project-diagram" style="color: #e11d48; position: absolute; left: -1.8rem; top: 0.35rem; font-size: 1.1rem;"></i> <strong>Discriminative Information:</strong> While being rotation-invariant, the model must maintain sufficient expressiveness (discriminative power) to successfully distinguish different biological structures.</li>
+                </ul>
+                
+                                                <!-- Patch Rotation & Manifold Animation -->
+                <div style="margin-top: 2.5rem; padding-top: 2.5rem; border-top: 1px dashed rgba(59,130,246,0.3);">
+                    <div style="text-align: center; font-size: 1.6rem; font-weight: 700; color: #94a3b8; margin-bottom: 2.5rem; letter-spacing: -0.5px;">
+                        <span style="background: linear-gradient(120deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;">In</span>variance <span style="opacity: 0.3; margin: 0 0.5rem; font-size: 1.2rem;">x</span> Expressiveness
+                    </div>
+                    <div style="display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1.5rem;">
+                    
+                    <!-- Left: Patch Rotation -->
+                    <div class="patch-animation-container" style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="position: relative; width: 140px; height: 140px;">
+                            <img src="assets/patch.png" id="animated-patch" alt="Tissue Patch" style="width: 100%; height: 100%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);">
+                        </div>
+                        <div id="patch-angle-label" style="margin-top: 1.5rem; font-weight: 700; font-size: 1rem; color: #64748b; letter-spacing: 1px; text-transform: uppercase;">0° Rotation</div>
+                    </div>
+                    
+                    <!-- Arrow: Sleek SVG -->
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                        <svg width="60" height="20" viewBox="0 0 60 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0 10H58M58 10L50 2M58 10L50 18" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    
+                    <!-- Right: Complex Manifold Embedding -->
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="manifold-container" style="position: relative; width: 200px; height: 143px; overflow: visible;">
+                            <svg width="200" height="143" viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;">
+                                <g fill="none" stroke="#000000" stroke-width="0.8" style="opacity: 0.6;">
+                                    <path d="M 140.0 53.3 L 132.2 55.2 L 124.4 57.0 L 116.7 58.5 L 108.9 59.3 L 101.1 59.6 L 93.3 59.2 L 85.6 58.5 L 77.8 57.8 L 70.0 57.3 L 62.2 57.4 L 54.4 58.5 L 46.7 60.7 L 38.9 64.0 L 31.1 68.5 L 23.3 74.0 L 15.6 80.0 L 7.8 86.3 L 0.0 92.6 L -7.8 98.5 L -15.6 103.8 L -23.3 108.5 L -31.1 112.6 L -38.9 116.3 L -46.7 120.0" />
+                                    <path d="M 150.4 65.2 L 142.6 66.5 L 134.8 67.4 L 127.0 67.7 L 119.3 67.4 L 111.5 66.5 L 103.7 65.4 L 95.9 64.3 L 88.1 63.6 L 80.4 63.7 L 72.6 64.7 L 64.8 66.9 L 57.0 70.3 L 49.3 74.8 L 41.5 80.1 L 33.7 85.9 L 25.9 91.8 L 18.1 97.6 L 10.4 103.0 L 2.6 107.7 L -5.2 111.8 L -13.0 115.4 L -20.7 118.7 L -28.5 122.1 L -36.3 125.8" />
+                                    <path d="M 160.7 75.6 L 153.0 75.9 L 145.2 75.6 L 137.4 74.7 L 129.6 73.4 L 121.9 71.9 L 114.1 70.5 L 106.3 69.6 L 98.5 69.6 L 90.7 70.7 L 83.0 72.9 L 75.2 76.3 L 67.4 80.7 L 59.6 85.8 L 51.9 91.4 L 44.1 97.0 L 36.3 102.2 L 28.5 107.0 L 20.7 111.2 L 13.0 114.7 L 5.2 117.8 L -2.6 120.7 L -10.4 123.8 L -18.1 127.4 L -25.9 131.9" />
+                                    <path d="M 171.1 83.4 L 163.3 82.6 L 155.6 81.1 L 147.8 79.3 L 140.0 77.4 L 132.2 75.8 L 124.4 74.9 L 116.7 74.8 L 108.9 75.9 L 101.1 78.1 L 93.3 81.5 L 85.6 85.8 L 77.8 90.8 L 70.0 96.0 L 62.2 101.1 L 54.4 105.9 L 46.7 110.1 L 38.9 113.7 L 31.1 116.7 L 23.3 119.3 L 15.6 121.9 L 7.8 124.7 L 0.0 128.2 L -7.8 132.6 L -15.6 138.1" />
+                                    <path d="M 181.5 88.1 L 173.7 86.2 L 165.9 83.9 L 158.1 81.7 L 150.4 79.9 L 142.6 78.9 L 134.8 78.8 L 127.0 79.9 L 119.3 82.2 L 111.5 85.5 L 103.7 89.7 L 95.9 94.4 L 88.1 99.3 L 80.4 103.9 L 72.6 108.2 L 64.8 111.8 L 57.0 114.8 L 49.3 117.3 L 41.5 119.5 L 33.7 121.7 L 25.9 124.4 L 18.1 127.7 L 10.4 132.1 L 2.6 137.7 L -5.2 144.4" />
+                                    <path d="M 191.9 89.6 L 184.1 87.0 L 176.3 84.5 L 168.5 82.6 L 160.7 81.4 L 153.0 81.4 L 145.2 82.5 L 137.4 84.8 L 129.6 88.1 L 121.9 92.1 L 114.1 96.5 L 106.3 101.0 L 98.5 105.2 L 90.7 108.8 L 83.0 111.9 L 75.2 114.3 L 67.4 116.3 L 59.6 118.1 L 51.9 120.1 L 44.1 122.6 L 36.3 125.9 L 28.5 130.3 L 20.7 135.8 L 13.0 142.6 L 5.2 150.3" />
+                                    <path d="M 202.2 88.5 L 194.4 85.8 L 186.7 83.7 L 178.9 82.6 L 171.1 82.5 L 163.3 83.7 L 155.6 86.0 L 147.8 89.2 L 140.0 93.0 L 132.2 97.1 L 124.4 101.1 L 116.7 104.8 L 108.9 107.9 L 101.1 110.3 L 93.3 112.2 L 85.6 113.8 L 77.8 115.2 L 70.0 116.9 L 62.2 119.3 L 54.4 122.6 L 46.7 127.0 L 38.9 132.6 L 31.1 139.3 L 23.3 146.9 L 15.6 155.2" />
+                                    <path d="M 212.6 85.9 L 204.8 83.7 L 197.0 82.5 L 189.3 82.5 L 181.5 83.7 L 173.7 85.9 L 165.9 89.0 L 158.1 92.6 L 150.4 96.3 L 142.6 99.9 L 134.8 103.0 L 127.0 105.5 L 119.3 107.4 L 111.5 108.8 L 103.7 109.9 L 95.9 111.0 L 88.1 112.6 L 80.4 114.8 L 72.6 118.1 L 64.8 122.5 L 57.0 128.1 L 49.3 134.8 L 41.5 142.3 L 33.7 150.4 L 25.9 158.6" />
+                                    <path d="M 223.0 82.9 L 215.2 81.7 L 207.4 81.7 L 199.6 82.9 L 191.9 85.1 L 184.1 88.0 L 176.3 91.3 L 168.5 94.7 L 160.7 97.7 L 153.0 100.3 L 145.2 102.2 L 137.4 103.5 L 129.6 104.4 L 121.9 105.1 L 114.1 106.0 L 106.3 107.4 L 98.5 109.6 L 90.7 112.8 L 83.0 117.3 L 75.2 122.9 L 67.4 129.5 L 59.6 136.9 L 51.9 144.6 L 44.1 152.4 L 36.3 160.0" />
+                                    <path d="M 233.3 80.7 L 225.6 80.7 L 217.8 81.9 L 210.0 84.0 L 202.2 86.7 L 194.4 89.7 L 186.7 92.6 L 178.9 95.1 L 171.1 97.1 L 163.3 98.5 L 155.6 99.2 L 147.8 99.7 L 140.0 100.0 L 132.2 100.6 L 124.4 101.9 L 116.7 104.0 L 108.9 107.3 L 101.1 111.8 L 93.3 117.4 L 85.6 124.0 L 77.8 131.1 L 70.0 138.5 L 62.2 145.9 L 54.4 152.9 L 46.7 159.3" />
+                                    <path d="M 243.7 80.0 L 235.9 81.2 L 228.1 83.1 L 220.4 85.6 L 212.6 88.2 L 204.8 90.7 L 197.0 92.7 L 189.3 94.1 L 181.5 94.9 L 173.7 95.1 L 165.9 95.1 L 158.1 95.2 L 150.4 95.6 L 142.6 96.7 L 134.8 98.9 L 127.0 102.2 L 119.3 106.7 L 111.5 112.3 L 103.7 118.7 L 95.9 125.6 L 88.1 132.7 L 80.4 139.6 L 72.6 146.0 L 64.8 151.9 L 57.0 157.1" />
+                                    <path d="M 254.1 81.4 L 246.3 83.2 L 238.5 85.4 L 230.7 87.7 L 223.0 89.6 L 215.2 91.1 L 207.4 91.9 L 199.6 92.1 L 191.9 91.9 L 184.1 91.5 L 176.3 91.2 L 168.5 91.5 L 160.7 92.6 L 153.0 94.7 L 145.2 98.1 L 137.4 102.6 L 129.6 108.1 L 121.9 114.3 L 114.1 121.0 L 106.3 127.7 L 98.5 134.1 L 90.7 140.0 L 83.0 145.2 L 75.2 149.9 L 67.4 154.1" />
+                                    <path d="M 264.4 84.8 L 256.7 86.7 L 248.9 88.5 L 241.1 89.9 L 233.3 90.8 L 225.6 91.0 L 217.8 90.7 L 210.0 90.0 L 202.2 89.2 L 194.4 88.7 L 186.7 88.9 L 178.9 89.9 L 171.1 92.1 L 163.3 95.5 L 155.6 100.0 L 147.8 105.4 L 140.0 111.5 L 132.2 117.8 L 124.4 124.0 L 116.7 129.9 L 108.9 135.2 L 101.1 139.9 L 93.3 144.0 L 85.6 147.8 L 77.8 151.5" />
+                                    <path d="M 274.8 89.7 L 267.0 91.1 L 259.3 91.9 L 251.5 92.2 L 243.7 91.9 L 235.9 91.1 L 228.1 89.9 L 220.4 88.8 L 212.6 88.2 L 204.8 88.2 L 197.0 89.2 L 189.3 91.5 L 181.5 94.8 L 173.7 99.3 L 165.9 104.6 L 158.1 110.4 L 150.4 116.4 L 142.6 122.2 L 134.8 127.5 L 127.0 132.2 L 119.3 136.3 L 111.5 139.9 L 103.7 143.3 L 95.9 146.6 L 88.1 150.4" />
+                                    <path d="M 285.2 95.6 L 277.4 95.9 L 269.6 95.7 L 261.9 94.8 L 254.1 93.4 L 246.3 91.9 L 238.5 90.5 L 230.7 89.7 L 223.0 89.7 L 215.2 90.7 L 207.4 93.0 L 199.6 96.3 L 191.9 100.7 L 184.1 105.9 L 176.3 111.4 L 168.5 117.0 L 160.7 122.3 L 153.0 127.1 L 145.2 131.2 L 137.4 134.8 L 129.6 137.9 L 121.9 140.8 L 114.1 143.9 L 106.3 147.5 L 98.5 151.9" />
+                                    <path d="M 295.6 101.9 L 287.8 101.0 L 280.0 99.6 L 272.2 97.8 L 264.4 95.9 L 256.7 94.3 L 248.9 93.3 L 241.1 93.3 L 233.3 94.3 L 225.6 96.6 L 217.8 100.0 L 210.0 104.3 L 202.2 109.2 L 194.4 114.4 L 186.7 119.6 L 178.9 124.4 L 171.1 128.6 L 163.3 132.1 L 155.6 135.1 L 147.8 137.8 L 140.0 140.3 L 132.2 143.2 L 124.4 146.7 L 116.7 151.0 L 108.9 156.6" />
+                                    <path d="M 305.9 108.1 L 298.1 106.2 L 290.4 103.9 L 282.6 101.8 L 274.8 100.0 L 267.0 98.9 L 259.3 98.8 L 251.5 99.9 L 243.7 102.2 L 235.9 105.5 L 228.1 109.7 L 220.4 114.4 L 212.6 119.3 L 204.8 124.0 L 197.0 128.2 L 189.3 131.8 L 181.5 134.8 L 173.7 137.3 L 165.9 139.5 L 158.1 141.8 L 150.4 144.4 L 142.6 147.8 L 134.8 152.2 L 127.0 157.7 L 119.3 164.4" />
+                                    <path d="M 316.3 114.2 L 308.5 111.5 L 300.7 109.1 L 293.0 107.1 L 285.2 106.0 L 277.4 105.9 L 269.6 107.0 L 261.9 109.3 L 254.1 112.6 L 246.3 116.6 L 238.5 121.1 L 230.7 125.5 L 223.0 129.7 L 215.2 133.4 L 207.4 136.4 L 199.6 138.8 L 191.9 140.8 L 184.1 142.6 L 176.3 144.6 L 168.5 147.1 L 160.7 150.4 L 153.0 154.8 L 145.2 160.4 L 137.4 167.1 L 129.6 174.8" />
+                                    <path d="M 326.7 120.0 L 318.9 117.3 L 311.1 115.2 L 303.3 114.0 L 295.6 114.0 L 287.8 115.2 L 280.0 117.4 L 272.2 120.6 L 264.4 124.4 L 256.7 128.5 L 248.9 132.6 L 241.1 136.2 L 233.3 139.3 L 225.6 141.8 L 217.8 143.7 L 210.0 145.2 L 202.2 146.7 L 194.4 148.4 L 186.7 150.8 L 178.9 154.0 L 171.1 158.4 L 163.3 164.0 L 155.6 170.8 L 147.8 178.4 L 140.0 186.7" />
+                                    <path d="M 140.0 53.3 L 147.8 62.3 L 155.6 70.6 L 163.3 77.8 L 171.1 83.4 L 178.9 87.3 L 186.7 89.2 L 194.4 89.6 L 202.2 88.5 L 210.0 86.6 L 217.8 84.4 L 225.6 82.2 L 233.3 80.7 L 241.1 80.0 L 248.9 80.5 L 256.7 82.1 L 264.4 84.8 L 272.2 88.4 L 280.0 92.6 L 287.8 97.2 L 295.6 101.9 L 303.3 106.6 L 311.1 111.2 L 318.9 115.6 L 326.7 120.0" />
+                                    <path d="M 129.6 55.8 L 137.4 64.3 L 145.2 71.7 L 153.0 77.7 L 160.7 82.1 L 168.5 84.9 L 176.3 86.1 L 184.1 86.0 L 191.9 85.1 L 199.6 83.7 L 207.4 82.3 L 215.2 81.3 L 223.0 81.0 L 230.7 81.4 L 238.5 82.7 L 246.3 84.7 L 254.1 87.3 L 261.9 90.3 L 269.6 93.6 L 277.4 97.1 L 285.2 100.6 L 293.0 104.2 L 300.7 108.0 L 308.5 112.1 L 316.3 116.5" />
+                                    <path d="M 119.3 58.0 L 127.0 65.4 L 134.8 71.7 L 142.6 76.5 L 150.4 79.9 L 158.1 82.0 L 165.9 83.0 L 173.7 83.1 L 181.5 82.9 L 189.3 82.5 L 197.0 82.3 L 204.8 82.5 L 212.6 83.2 L 220.4 84.3 L 228.1 85.8 L 235.9 87.6 L 243.7 89.5 L 251.5 91.5 L 259.3 93.6 L 267.0 95.9 L 274.8 98.4 L 282.6 101.3 L 290.4 104.9 L 298.1 109.2 L 305.9 114.3" />
+                                    <path d="M 108.9 59.3 L 116.7 65.5 L 124.4 70.6 L 132.2 74.6 L 140.0 77.4 L 147.8 79.4 L 155.6 80.8 L 163.3 81.7 L 171.1 82.5 L 178.9 83.4 L 186.7 84.4 L 194.4 85.5 L 202.2 86.7 L 210.0 87.9 L 217.8 89.0 L 225.6 89.9 L 233.3 90.8 L 241.1 91.6 L 248.9 92.6 L 256.7 93.9 L 264.4 95.9 L 272.2 98.8 L 280.0 102.7 L 287.8 107.8 L 295.6 114.0" />
+                                    <path d="M 98.5 59.5 L 106.3 64.6 L 114.1 68.9 L 121.9 72.5 L 129.6 75.4 L 137.4 77.9 L 145.2 80.2 L 153.0 82.3 L 160.7 84.3 L 168.5 86.3 L 176.3 88.0 L 184.1 89.5 L 191.9 90.7 L 199.6 91.3 L 207.4 91.5 L 215.2 91.3 L 223.0 91.0 L 230.7 90.7 L 238.5 90.9 L 246.3 91.8 L 254.1 93.9 L 261.9 97.3 L 269.6 102.1 L 277.4 108.4 L 285.2 115.8" />
+                                    <path d="M 88.1 58.8 L 95.9 63.2 L 103.7 67.3 L 111.5 71.1 L 119.3 74.7 L 127.0 78.2 L 134.8 81.7 L 142.6 85.0 L 150.4 88.0 L 158.1 90.6 L 165.9 92.6 L 173.7 93.9 L 181.5 94.3 L 189.3 94.0 L 197.0 93.0 L 204.8 91.6 L 212.6 90.3 L 220.4 89.3 L 228.1 89.2 L 235.9 90.4 L 243.7 93.2 L 251.5 97.6 L 259.3 103.6 L 267.0 111.0 L 274.8 119.5" />
+                                    <path d="M 77.8 57.8 L 85.6 62.1 L 93.3 66.6 L 101.1 71.2 L 108.9 75.9 L 116.7 80.6 L 124.4 85.2 L 132.2 89.4 L 140.0 93.0 L 147.8 95.7 L 155.6 97.3 L 163.3 97.8 L 171.1 97.1 L 178.9 95.5 L 186.7 93.4 L 194.4 91.1 L 202.2 89.2 L 210.0 88.2 L 217.8 88.5 L 225.6 90.5 L 233.3 94.3 L 241.1 100.0 L 248.9 107.1 L 256.7 115.5 L 264.4 124.4" />
+                                    <path d="M 67.4 57.2 L 75.2 62.1 L 83.0 67.5 L 90.7 73.2 L 98.5 79.2 L 106.3 85.0 L 114.1 90.4 L 121.9 95.0 L 129.6 98.5 L 137.4 100.6 L 145.2 101.3 L 153.0 100.6 L 160.7 98.8 L 168.5 96.1 L 176.3 93.2 L 184.1 90.5 L 191.9 88.7 L 199.6 88.2 L 207.4 89.5 L 215.2 92.6 L 223.0 97.6 L 230.7 104.3 L 238.5 112.3 L 246.3 121.0 L 254.1 129.9" />
+                                    <path d="M 57.0 58.0 L 64.8 63.9 L 72.6 70.5 L 80.4 77.4 L 88.1 84.3 L 95.9 90.8 L 103.7 96.4 L 111.5 100.8 L 119.3 103.6 L 127.0 104.8 L 134.8 104.3 L 142.6 102.4 L 150.4 99.5 L 158.1 96.2 L 165.9 93.0 L 173.7 90.6 L 181.5 89.5 L 189.3 90.0 L 197.0 92.4 L 204.8 96.7 L 212.6 102.8 L 220.4 110.2 L 228.1 118.4 L 235.9 126.9 L 243.7 135.1" />
+                                    <path d="M 46.7 60.7 L 54.4 67.8 L 62.2 75.5 L 70.0 83.3 L 77.8 90.8 L 85.6 97.3 L 93.3 102.6 L 101.1 106.1 L 108.9 107.9 L 116.7 107.8 L 124.4 106.2 L 132.2 103.4 L 140.0 100.0 L 147.8 96.6 L 155.6 93.8 L 163.3 92.2 L 171.1 92.1 L 178.9 93.9 L 186.7 97.4 L 194.4 102.7 L 202.2 109.2 L 210.0 116.7 L 217.8 124.5 L 225.6 132.2 L 233.3 139.3" />
+                                    <path d="M 36.3 65.4 L 44.1 73.6 L 51.9 82.1 L 59.6 90.3 L 67.4 97.7 L 75.2 103.8 L 83.0 108.1 L 90.7 110.5 L 98.5 111.0 L 106.3 109.9 L 114.1 107.4 L 121.9 104.3 L 129.6 101.0 L 137.4 98.1 L 145.2 96.2 L 153.0 95.7 L 160.7 96.9 L 168.5 99.7 L 176.3 104.1 L 184.1 109.7 L 191.9 116.2 L 199.6 123.1 L 207.4 130.0 L 215.2 136.6 L 223.0 142.5" />
+                                    <path d="M 25.9 72.1 L 33.7 80.9 L 41.5 89.7 L 49.3 97.7 L 57.0 104.4 L 64.8 109.4 L 72.6 112.5 L 80.4 113.8 L 88.1 113.3 L 95.9 111.5 L 103.7 108.8 L 111.5 105.8 L 119.3 103.2 L 127.0 101.3 L 134.8 100.7 L 142.6 101.4 L 150.4 103.5 L 158.1 107.0 L 165.9 111.6 L 173.7 117.0 L 181.5 122.8 L 189.3 128.7 L 197.0 134.5 L 204.8 139.8 L 212.6 144.7" />
+                                    <path d="M 15.6 80.0 L 23.3 89.0 L 31.1 97.3 L 38.9 104.5 L 46.7 110.1 L 54.4 113.9 L 62.2 115.9 L 70.0 116.2 L 77.8 115.2 L 85.6 113.3 L 93.3 111.0 L 101.1 108.9 L 108.9 107.3 L 116.7 106.7 L 124.4 107.1 L 132.2 108.8 L 140.0 111.5 L 147.8 115.0 L 155.6 119.2 L 163.3 123.8 L 171.1 128.6 L 178.9 133.3 L 186.7 137.9 L 194.4 142.3 L 202.2 146.7" />
+                                    <path d="M 5.2 88.4 L 13.0 96.9 L 20.7 104.3 L 28.5 110.3 L 36.3 114.7 L 44.1 117.5 L 51.9 118.7 L 59.6 118.6 L 67.4 117.6 L 75.2 116.3 L 83.0 114.9 L 90.7 113.9 L 98.5 113.6 L 106.3 114.0 L 114.1 115.3 L 121.9 117.3 L 129.6 119.9 L 137.4 122.9 L 145.2 126.2 L 153.0 129.7 L 160.7 133.2 L 168.5 136.8 L 176.3 140.6 L 184.1 144.7 L 191.9 149.1" />
+                                    <path d="M -5.2 96.6 L 2.6 104.0 L 10.4 110.2 L 18.1 115.1 L 25.9 118.5 L 33.7 120.5 L 41.5 121.5 L 49.3 121.6 L 57.0 121.4 L 64.8 121.0 L 72.6 120.8 L 80.4 121.0 L 88.1 121.7 L 95.9 122.8 L 103.7 124.3 L 111.5 126.1 L 119.3 128.0 L 127.0 130.0 L 134.8 132.2 L 142.6 134.4 L 150.4 136.9 L 158.1 139.9 L 165.9 143.4 L 173.7 147.7 L 181.5 152.8" />
+                                    <path d="M -15.6 103.8 L -7.8 110.0 L 0.0 115.1 L 7.8 119.0 L 15.6 121.9 L 23.3 123.9 L 31.1 125.2 L 38.9 126.2 L 46.7 127.0 L 54.4 127.8 L 62.2 128.8 L 70.0 129.9 L 77.8 131.1 L 85.6 132.3 L 93.3 133.4 L 101.1 134.4 L 108.9 135.2 L 116.7 136.1 L 124.4 137.0 L 132.2 138.4 L 140.0 140.3 L 147.8 143.2 L 155.6 147.1 L 163.3 152.2 L 171.1 158.4" />
+                                    <path d="M -25.9 109.9 L -18.1 115.0 L -10.4 119.3 L -2.6 122.8 L 5.2 125.8 L 13.0 128.3 L 20.7 130.6 L 28.5 132.7 L 36.3 134.7 L 44.1 136.6 L 51.9 138.4 L 59.6 139.9 L 67.4 141.0 L 75.2 141.7 L 83.0 141.9 L 90.7 141.7 L 98.5 141.3 L 106.3 141.1 L 114.1 141.2 L 121.9 142.2 L 129.6 144.3 L 137.4 147.7 L 145.2 152.5 L 153.0 158.7 L 160.7 166.2" />
+                                    <path d="M -36.3 115.1 L -28.5 119.5 L -20.7 123.6 L -13.0 127.4 L -5.2 131.0 L 2.6 134.5 L 10.4 138.0 L 18.1 141.3 L 25.9 144.3 L 33.7 146.9 L 41.5 148.9 L 49.3 150.2 L 57.0 150.6 L 64.8 150.3 L 72.6 149.3 L 80.4 147.9 L 88.1 146.6 L 95.9 145.6 L 103.7 145.5 L 111.5 146.7 L 119.3 149.5 L 127.0 153.9 L 134.8 159.9 L 142.6 167.3 L 150.4 175.8" />
+                                    <path d="M -46.7 120.0 L -38.9 124.4 L -31.1 128.8 L -23.3 133.4 L -15.6 138.1 L -7.8 142.8 L 0.0 147.4 L 7.8 151.6 L 15.6 155.2 L 23.3 157.9 L 31.1 159.5 L 38.9 160.0 L 46.7 159.3 L 54.4 157.8 L 62.2 155.6 L 70.0 153.4 L 77.8 151.5 L 85.6 150.4 L 93.3 150.8 L 101.1 152.7 L 108.9 156.6 L 116.7 162.2 L 124.4 169.4 L 132.2 177.7 L 140.0 186.7" />
+                                </g>
+                            </svg>
+                            <!-- Plotted points container -->
+                            <div id="manifold-points" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                                <!-- Dots injected via JS -->
+                            </div>
+                        </div>
+                        <div id="manifold-label" style="margin-top: 1rem; font-weight: 700; font-size: 1rem; color: #64748b; letter-spacing: 1px; text-transform: uppercase;">Invariant Representation</div>
+                    </div>
+                </div>
+                
+                <p style="text-align: center; font-size: 1.05rem; color: #475569; max-width: 800px; margin: 2.5rem auto 0; line-height: 1.6;">
+                    <strong>Rotating a tissue patch does not alter its underlying morphology or diagnostic content.</strong> Consequently, an ideal pathology representation should assign nearly identical embeddings to rotated versions of the same tissue patch.
+                </p>
+
+                <!-- Expressiveness Animation -->
+                <div style="margin-top: 3.5rem; padding-top: 2.5rem; border-top: 1px dashed rgba(59,130,246,0.3);">
+                    <div style="text-align: center; font-size: 1.6rem; font-weight: 700; color: #94a3b8; margin-bottom: 2.5rem; letter-spacing: -0.5px;">
+                        Invariance <span style="opacity: 0.3; margin: 0 0.5rem; font-size: 1.2rem;">x</span> <span style="background: linear-gradient(120deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;">Ex</span>pressiveness
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1.5rem;">
+                        
+                        <!-- Left: Collapsed Manifold -->
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="position: relative; width: 200px; height: 143px; overflow: visible;">
+                                <svg width="200" height="143" viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;">
+                                <g fill="none" stroke="#000000" stroke-width="0.8" style="opacity: 0.6;">
+                                    <path d="M 140.0 53.3 L 132.2 55.2 L 124.4 57.0 L 116.7 58.5 L 108.9 59.3 L 101.1 59.6 L 93.3 59.2 L 85.6 58.5 L 77.8 57.8 L 70.0 57.3 L 62.2 57.4 L 54.4 58.5 L 46.7 60.7 L 38.9 64.0 L 31.1 68.5 L 23.3 74.0 L 15.6 80.0 L 7.8 86.3 L 0.0 92.6 L -7.8 98.5 L -15.6 103.8 L -23.3 108.5 L -31.1 112.6 L -38.9 116.3 L -46.7 120.0" />
+                                    <path d="M 150.4 65.2 L 142.6 66.5 L 134.8 67.4 L 127.0 67.7 L 119.3 67.4 L 111.5 66.5 L 103.7 65.4 L 95.9 64.3 L 88.1 63.6 L 80.4 63.7 L 72.6 64.7 L 64.8 66.9 L 57.0 70.3 L 49.3 74.8 L 41.5 80.1 L 33.7 85.9 L 25.9 91.8 L 18.1 97.6 L 10.4 103.0 L 2.6 107.7 L -5.2 111.8 L -13.0 115.4 L -20.7 118.7 L -28.5 122.1 L -36.3 125.8" />
+                                    <path d="M 160.7 75.6 L 153.0 75.9 L 145.2 75.6 L 137.4 74.7 L 129.6 73.4 L 121.9 71.9 L 114.1 70.5 L 106.3 69.6 L 98.5 69.6 L 90.7 70.7 L 83.0 72.9 L 75.2 76.3 L 67.4 80.7 L 59.6 85.8 L 51.9 91.4 L 44.1 97.0 L 36.3 102.2 L 28.5 107.0 L 20.7 111.2 L 13.0 114.7 L 5.2 117.8 L -2.6 120.7 L -10.4 123.8 L -18.1 127.4 L -25.9 131.9" />
+                                    <path d="M 171.1 83.4 L 163.3 82.6 L 155.6 81.1 L 147.8 79.3 L 140.0 77.4 L 132.2 75.8 L 124.4 74.9 L 116.7 74.8 L 108.9 75.9 L 101.1 78.1 L 93.3 81.5 L 85.6 85.8 L 77.8 90.8 L 70.0 96.0 L 62.2 101.1 L 54.4 105.9 L 46.7 110.1 L 38.9 113.7 L 31.1 116.7 L 23.3 119.3 L 15.6 121.9 L 7.8 124.7 L 0.0 128.2 L -7.8 132.6 L -15.6 138.1" />
+                                    <path d="M 181.5 88.1 L 173.7 86.2 L 165.9 83.9 L 158.1 81.7 L 150.4 79.9 L 142.6 78.9 L 134.8 78.8 L 127.0 79.9 L 119.3 82.2 L 111.5 85.5 L 103.7 89.7 L 95.9 94.4 L 88.1 99.3 L 80.4 103.9 L 72.6 108.2 L 64.8 111.8 L 57.0 114.8 L 49.3 117.3 L 41.5 119.5 L 33.7 121.7 L 25.9 124.4 L 18.1 127.7 L 10.4 132.1 L 2.6 137.7 L -5.2 144.4" />
+                                    <path d="M 191.9 89.6 L 184.1 87.0 L 176.3 84.5 L 168.5 82.6 L 160.7 81.4 L 153.0 81.4 L 145.2 82.5 L 137.4 84.8 L 129.6 88.1 L 121.9 92.1 L 114.1 96.5 L 106.3 101.0 L 98.5 105.2 L 90.7 108.8 L 83.0 111.9 L 75.2 114.3 L 67.4 116.3 L 59.6 118.1 L 51.9 120.1 L 44.1 122.6 L 36.3 125.9 L 28.5 130.3 L 20.7 135.8 L 13.0 142.6 L 5.2 150.3" />
+                                    <path d="M 202.2 88.5 L 194.4 85.8 L 186.7 83.7 L 178.9 82.6 L 171.1 82.5 L 163.3 83.7 L 155.6 86.0 L 147.8 89.2 L 140.0 93.0 L 132.2 97.1 L 124.4 101.1 L 116.7 104.8 L 108.9 107.9 L 101.1 110.3 L 93.3 112.2 L 85.6 113.8 L 77.8 115.2 L 70.0 116.9 L 62.2 119.3 L 54.4 122.6 L 46.7 127.0 L 38.9 132.6 L 31.1 139.3 L 23.3 146.9 L 15.6 155.2" />
+                                    <path d="M 212.6 85.9 L 204.8 83.7 L 197.0 82.5 L 189.3 82.5 L 181.5 83.7 L 173.7 85.9 L 165.9 89.0 L 158.1 92.6 L 150.4 96.3 L 142.6 99.9 L 134.8 103.0 L 127.0 105.5 L 119.3 107.4 L 111.5 108.8 L 103.7 109.9 L 95.9 111.0 L 88.1 112.6 L 80.4 114.8 L 72.6 118.1 L 64.8 122.5 L 57.0 128.1 L 49.3 134.8 L 41.5 142.3 L 33.7 150.4 L 25.9 158.6" />
+                                    <path d="M 223.0 82.9 L 215.2 81.7 L 207.4 81.7 L 199.6 82.9 L 191.9 85.1 L 184.1 88.0 L 176.3 91.3 L 168.5 94.7 L 160.7 97.7 L 153.0 100.3 L 145.2 102.2 L 137.4 103.5 L 129.6 104.4 L 121.9 105.1 L 114.1 106.0 L 106.3 107.4 L 98.5 109.6 L 90.7 112.8 L 83.0 117.3 L 75.2 122.9 L 67.4 129.5 L 59.6 136.9 L 51.9 144.6 L 44.1 152.4 L 36.3 160.0" />
+                                    <path d="M 233.3 80.7 L 225.6 80.7 L 217.8 81.9 L 210.0 84.0 L 202.2 86.7 L 194.4 89.7 L 186.7 92.6 L 178.9 95.1 L 171.1 97.1 L 163.3 98.5 L 155.6 99.2 L 147.8 99.7 L 140.0 100.0 L 132.2 100.6 L 124.4 101.9 L 116.7 104.0 L 108.9 107.3 L 101.1 111.8 L 93.3 117.4 L 85.6 124.0 L 77.8 131.1 L 70.0 138.5 L 62.2 145.9 L 54.4 152.9 L 46.7 159.3" />
+                                    <path d="M 243.7 80.0 L 235.9 81.2 L 228.1 83.1 L 220.4 85.6 L 212.6 88.2 L 204.8 90.7 L 197.0 92.7 L 189.3 94.1 L 181.5 94.9 L 173.7 95.1 L 165.9 95.1 L 158.1 95.2 L 150.4 95.6 L 142.6 96.7 L 134.8 98.9 L 127.0 102.2 L 119.3 106.7 L 111.5 112.3 L 103.7 118.7 L 95.9 125.6 L 88.1 132.7 L 80.4 139.6 L 72.6 146.0 L 64.8 151.9 L 57.0 157.1" />
+                                    <path d="M 254.1 81.4 L 246.3 83.2 L 238.5 85.4 L 230.7 87.7 L 223.0 89.6 L 215.2 91.1 L 207.4 91.9 L 199.6 92.1 L 191.9 91.9 L 184.1 91.5 L 176.3 91.2 L 168.5 91.5 L 160.7 92.6 L 153.0 94.7 L 145.2 98.1 L 137.4 102.6 L 129.6 108.1 L 121.9 114.3 L 114.1 121.0 L 106.3 127.7 L 98.5 134.1 L 90.7 140.0 L 83.0 145.2 L 75.2 149.9 L 67.4 154.1" />
+                                    <path d="M 264.4 84.8 L 256.7 86.7 L 248.9 88.5 L 241.1 89.9 L 233.3 90.8 L 225.6 91.0 L 217.8 90.7 L 210.0 90.0 L 202.2 89.2 L 194.4 88.7 L 186.7 88.9 L 178.9 89.9 L 171.1 92.1 L 163.3 95.5 L 155.6 100.0 L 147.8 105.4 L 140.0 111.5 L 132.2 117.8 L 124.4 124.0 L 116.7 129.9 L 108.9 135.2 L 101.1 139.9 L 93.3 144.0 L 85.6 147.8 L 77.8 151.5" />
+                                    <path d="M 274.8 89.7 L 267.0 91.1 L 259.3 91.9 L 251.5 92.2 L 243.7 91.9 L 235.9 91.1 L 228.1 89.9 L 220.4 88.8 L 212.6 88.2 L 204.8 88.2 L 197.0 89.2 L 189.3 91.5 L 181.5 94.8 L 173.7 99.3 L 165.9 104.6 L 158.1 110.4 L 150.4 116.4 L 142.6 122.2 L 134.8 127.5 L 127.0 132.2 L 119.3 136.3 L 111.5 139.9 L 103.7 143.3 L 95.9 146.6 L 88.1 150.4" />
+                                    <path d="M 285.2 95.6 L 277.4 95.9 L 269.6 95.7 L 261.9 94.8 L 254.1 93.4 L 246.3 91.9 L 238.5 90.5 L 230.7 89.7 L 223.0 89.7 L 215.2 90.7 L 207.4 93.0 L 199.6 96.3 L 191.9 100.7 L 184.1 105.9 L 176.3 111.4 L 168.5 117.0 L 160.7 122.3 L 153.0 127.1 L 145.2 131.2 L 137.4 134.8 L 129.6 137.9 L 121.9 140.8 L 114.1 143.9 L 106.3 147.5 L 98.5 151.9" />
+                                    <path d="M 295.6 101.9 L 287.8 101.0 L 280.0 99.6 L 272.2 97.8 L 264.4 95.9 L 256.7 94.3 L 248.9 93.3 L 241.1 93.3 L 233.3 94.3 L 225.6 96.6 L 217.8 100.0 L 210.0 104.3 L 202.2 109.2 L 194.4 114.4 L 186.7 119.6 L 178.9 124.4 L 171.1 128.6 L 163.3 132.1 L 155.6 135.1 L 147.8 137.8 L 140.0 140.3 L 132.2 143.2 L 124.4 146.7 L 116.7 151.0 L 108.9 156.6" />
+                                    <path d="M 305.9 108.1 L 298.1 106.2 L 290.4 103.9 L 282.6 101.8 L 274.8 100.0 L 267.0 98.9 L 259.3 98.8 L 251.5 99.9 L 243.7 102.2 L 235.9 105.5 L 228.1 109.7 L 220.4 114.4 L 212.6 119.3 L 204.8 124.0 L 197.0 128.2 L 189.3 131.8 L 181.5 134.8 L 173.7 137.3 L 165.9 139.5 L 158.1 141.8 L 150.4 144.4 L 142.6 147.8 L 134.8 152.2 L 127.0 157.7 L 119.3 164.4" />
+                                    <path d="M 316.3 114.2 L 308.5 111.5 L 300.7 109.1 L 293.0 107.1 L 285.2 106.0 L 277.4 105.9 L 269.6 107.0 L 261.9 109.3 L 254.1 112.6 L 246.3 116.6 L 238.5 121.1 L 230.7 125.5 L 223.0 129.7 L 215.2 133.4 L 207.4 136.4 L 199.6 138.8 L 191.9 140.8 L 184.1 142.6 L 176.3 144.6 L 168.5 147.1 L 160.7 150.4 L 153.0 154.8 L 145.2 160.4 L 137.4 167.1 L 129.6 174.8" />
+                                    <path d="M 326.7 120.0 L 318.9 117.3 L 311.1 115.2 L 303.3 114.0 L 295.6 114.0 L 287.8 115.2 L 280.0 117.4 L 272.2 120.6 L 264.4 124.4 L 256.7 128.5 L 248.9 132.6 L 241.1 136.2 L 233.3 139.3 L 225.6 141.8 L 217.8 143.7 L 210.0 145.2 L 202.2 146.7 L 194.4 148.4 L 186.7 150.8 L 178.9 154.0 L 171.1 158.4 L 163.3 164.0 L 155.6 170.8 L 147.8 178.4 L 140.0 186.7" />
+                                    <path d="M 140.0 53.3 L 147.8 62.3 L 155.6 70.6 L 163.3 77.8 L 171.1 83.4 L 178.9 87.3 L 186.7 89.2 L 194.4 89.6 L 202.2 88.5 L 210.0 86.6 L 217.8 84.4 L 225.6 82.2 L 233.3 80.7 L 241.1 80.0 L 248.9 80.5 L 256.7 82.1 L 264.4 84.8 L 272.2 88.4 L 280.0 92.6 L 287.8 97.2 L 295.6 101.9 L 303.3 106.6 L 311.1 111.2 L 318.9 115.6 L 326.7 120.0" />
+                                    <path d="M 129.6 55.8 L 137.4 64.3 L 145.2 71.7 L 153.0 77.7 L 160.7 82.1 L 168.5 84.9 L 176.3 86.1 L 184.1 86.0 L 191.9 85.1 L 199.6 83.7 L 207.4 82.3 L 215.2 81.3 L 223.0 81.0 L 230.7 81.4 L 238.5 82.7 L 246.3 84.7 L 254.1 87.3 L 261.9 90.3 L 269.6 93.6 L 277.4 97.1 L 285.2 100.6 L 293.0 104.2 L 300.7 108.0 L 308.5 112.1 L 316.3 116.5" />
+                                    <path d="M 119.3 58.0 L 127.0 65.4 L 134.8 71.7 L 142.6 76.5 L 150.4 79.9 L 158.1 82.0 L 165.9 83.0 L 173.7 83.1 L 181.5 82.9 L 189.3 82.5 L 197.0 82.3 L 204.8 82.5 L 212.6 83.2 L 220.4 84.3 L 228.1 85.8 L 235.9 87.6 L 243.7 89.5 L 251.5 91.5 L 259.3 93.6 L 267.0 95.9 L 274.8 98.4 L 282.6 101.3 L 290.4 104.9 L 298.1 109.2 L 305.9 114.3" />
+                                    <path d="M 108.9 59.3 L 116.7 65.5 L 124.4 70.6 L 132.2 74.6 L 140.0 77.4 L 147.8 79.4 L 155.6 80.8 L 163.3 81.7 L 171.1 82.5 L 178.9 83.4 L 186.7 84.4 L 194.4 85.5 L 202.2 86.7 L 210.0 87.9 L 217.8 89.0 L 225.6 89.9 L 233.3 90.8 L 241.1 91.6 L 248.9 92.6 L 256.7 93.9 L 264.4 95.9 L 272.2 98.8 L 280.0 102.7 L 287.8 107.8 L 295.6 114.0" />
+                                    <path d="M 98.5 59.5 L 106.3 64.6 L 114.1 68.9 L 121.9 72.5 L 129.6 75.4 L 137.4 77.9 L 145.2 80.2 L 153.0 82.3 L 160.7 84.3 L 168.5 86.3 L 176.3 88.0 L 184.1 89.5 L 191.9 90.7 L 199.6 91.3 L 207.4 91.5 L 215.2 91.3 L 223.0 91.0 L 230.7 90.7 L 238.5 90.9 L 246.3 91.8 L 254.1 93.9 L 261.9 97.3 L 269.6 102.1 L 277.4 108.4 L 285.2 115.8" />
+                                    <path d="M 88.1 58.8 L 95.9 63.2 L 103.7 67.3 L 111.5 71.1 L 119.3 74.7 L 127.0 78.2 L 134.8 81.7 L 142.6 85.0 L 150.4 88.0 L 158.1 90.6 L 165.9 92.6 L 173.7 93.9 L 181.5 94.3 L 189.3 94.0 L 197.0 93.0 L 204.8 91.6 L 212.6 90.3 L 220.4 89.3 L 228.1 89.2 L 235.9 90.4 L 243.7 93.2 L 251.5 97.6 L 259.3 103.6 L 267.0 111.0 L 274.8 119.5" />
+                                    <path d="M 77.8 57.8 L 85.6 62.1 L 93.3 66.6 L 101.1 71.2 L 108.9 75.9 L 116.7 80.6 L 124.4 85.2 L 132.2 89.4 L 140.0 93.0 L 147.8 95.7 L 155.6 97.3 L 163.3 97.8 L 171.1 97.1 L 178.9 95.5 L 186.7 93.4 L 194.4 91.1 L 202.2 89.2 L 210.0 88.2 L 217.8 88.5 L 225.6 90.5 L 233.3 94.3 L 241.1 100.0 L 248.9 107.1 L 256.7 115.5 L 264.4 124.4" />
+                                    <path d="M 67.4 57.2 L 75.2 62.1 L 83.0 67.5 L 90.7 73.2 L 98.5 79.2 L 106.3 85.0 L 114.1 90.4 L 121.9 95.0 L 129.6 98.5 L 137.4 100.6 L 145.2 101.3 L 153.0 100.6 L 160.7 98.8 L 168.5 96.1 L 176.3 93.2 L 184.1 90.5 L 191.9 88.7 L 199.6 88.2 L 207.4 89.5 L 215.2 92.6 L 223.0 97.6 L 230.7 104.3 L 238.5 112.3 L 246.3 121.0 L 254.1 129.9" />
+                                    <path d="M 57.0 58.0 L 64.8 63.9 L 72.6 70.5 L 80.4 77.4 L 88.1 84.3 L 95.9 90.8 L 103.7 96.4 L 111.5 100.8 L 119.3 103.6 L 127.0 104.8 L 134.8 104.3 L 142.6 102.4 L 150.4 99.5 L 158.1 96.2 L 165.9 93.0 L 173.7 90.6 L 181.5 89.5 L 189.3 90.0 L 197.0 92.4 L 204.8 96.7 L 212.6 102.8 L 220.4 110.2 L 228.1 118.4 L 235.9 126.9 L 243.7 135.1" />
+                                    <path d="M 46.7 60.7 L 54.4 67.8 L 62.2 75.5 L 70.0 83.3 L 77.8 90.8 L 85.6 97.3 L 93.3 102.6 L 101.1 106.1 L 108.9 107.9 L 116.7 107.8 L 124.4 106.2 L 132.2 103.4 L 140.0 100.0 L 147.8 96.6 L 155.6 93.8 L 163.3 92.2 L 171.1 92.1 L 178.9 93.9 L 186.7 97.4 L 194.4 102.7 L 202.2 109.2 L 210.0 116.7 L 217.8 124.5 L 225.6 132.2 L 233.3 139.3" />
+                                    <path d="M 36.3 65.4 L 44.1 73.6 L 51.9 82.1 L 59.6 90.3 L 67.4 97.7 L 75.2 103.8 L 83.0 108.1 L 90.7 110.5 L 98.5 111.0 L 106.3 109.9 L 114.1 107.4 L 121.9 104.3 L 129.6 101.0 L 137.4 98.1 L 145.2 96.2 L 153.0 95.7 L 160.7 96.9 L 168.5 99.7 L 176.3 104.1 L 184.1 109.7 L 191.9 116.2 L 199.6 123.1 L 207.4 130.0 L 215.2 136.6 L 223.0 142.5" />
+                                    <path d="M 25.9 72.1 L 33.7 80.9 L 41.5 89.7 L 49.3 97.7 L 57.0 104.4 L 64.8 109.4 L 72.6 112.5 L 80.4 113.8 L 88.1 113.3 L 95.9 111.5 L 103.7 108.8 L 111.5 105.8 L 119.3 103.2 L 127.0 101.3 L 134.8 100.7 L 142.6 101.4 L 150.4 103.5 L 158.1 107.0 L 165.9 111.6 L 173.7 117.0 L 181.5 122.8 L 189.3 128.7 L 197.0 134.5 L 204.8 139.8 L 212.6 144.7" />
+                                    <path d="M 15.6 80.0 L 23.3 89.0 L 31.1 97.3 L 38.9 104.5 L 46.7 110.1 L 54.4 113.9 L 62.2 115.9 L 70.0 116.2 L 77.8 115.2 L 85.6 113.3 L 93.3 111.0 L 101.1 108.9 L 108.9 107.3 L 116.7 106.7 L 124.4 107.1 L 132.2 108.8 L 140.0 111.5 L 147.8 115.0 L 155.6 119.2 L 163.3 123.8 L 171.1 128.6 L 178.9 133.3 L 186.7 137.9 L 194.4 142.3 L 202.2 146.7" />
+                                    <path d="M 5.2 88.4 L 13.0 96.9 L 20.7 104.3 L 28.5 110.3 L 36.3 114.7 L 44.1 117.5 L 51.9 118.7 L 59.6 118.6 L 67.4 117.6 L 75.2 116.3 L 83.0 114.9 L 90.7 113.9 L 98.5 113.6 L 106.3 114.0 L 114.1 115.3 L 121.9 117.3 L 129.6 119.9 L 137.4 122.9 L 145.2 126.2 L 153.0 129.7 L 160.7 133.2 L 168.5 136.8 L 176.3 140.6 L 184.1 144.7 L 191.9 149.1" />
+                                    <path d="M -5.2 96.6 L 2.6 104.0 L 10.4 110.2 L 18.1 115.1 L 25.9 118.5 L 33.7 120.5 L 41.5 121.5 L 49.3 121.6 L 57.0 121.4 L 64.8 121.0 L 72.6 120.8 L 80.4 121.0 L 88.1 121.7 L 95.9 122.8 L 103.7 124.3 L 111.5 126.1 L 119.3 128.0 L 127.0 130.0 L 134.8 132.2 L 142.6 134.4 L 150.4 136.9 L 158.1 139.9 L 165.9 143.4 L 173.7 147.7 L 181.5 152.8" />
+                                    <path d="M -15.6 103.8 L -7.8 110.0 L 0.0 115.1 L 7.8 119.0 L 15.6 121.9 L 23.3 123.9 L 31.1 125.2 L 38.9 126.2 L 46.7 127.0 L 54.4 127.8 L 62.2 128.8 L 70.0 129.9 L 77.8 131.1 L 85.6 132.3 L 93.3 133.4 L 101.1 134.4 L 108.9 135.2 L 116.7 136.1 L 124.4 137.0 L 132.2 138.4 L 140.0 140.3 L 147.8 143.2 L 155.6 147.1 L 163.3 152.2 L 171.1 158.4" />
+                                    <path d="M -25.9 109.9 L -18.1 115.0 L -10.4 119.3 L -2.6 122.8 L 5.2 125.8 L 13.0 128.3 L 20.7 130.6 L 28.5 132.7 L 36.3 134.7 L 44.1 136.6 L 51.9 138.4 L 59.6 139.9 L 67.4 141.0 L 75.2 141.7 L 83.0 141.9 L 90.7 141.7 L 98.5 141.3 L 106.3 141.1 L 114.1 141.2 L 121.9 142.2 L 129.6 144.3 L 137.4 147.7 L 145.2 152.5 L 153.0 158.7 L 160.7 166.2" />
+                                    <path d="M -36.3 115.1 L -28.5 119.5 L -20.7 123.6 L -13.0 127.4 L -5.2 131.0 L 2.6 134.5 L 10.4 138.0 L 18.1 141.3 L 25.9 144.3 L 33.7 146.9 L 41.5 148.9 L 49.3 150.2 L 57.0 150.6 L 64.8 150.3 L 72.6 149.3 L 80.4 147.9 L 88.1 146.6 L 95.9 145.6 L 103.7 145.5 L 111.5 146.7 L 119.3 149.5 L 127.0 153.9 L 134.8 159.9 L 142.6 167.3 L 150.4 175.8" />
+                                    <path d="M -46.7 120.0 L -38.9 124.4 L -31.1 128.8 L -23.3 133.4 L -15.6 138.1 L -7.8 142.8 L 0.0 147.4 L 7.8 151.6 L 15.6 155.2 L 23.3 157.9 L 31.1 159.5 L 38.9 160.0 L 46.7 159.3 L 54.4 157.8 L 62.2 155.6 L 70.0 153.4 L 77.8 151.5 L 85.6 150.4 L 93.3 150.8 L 101.1 152.7 L 108.9 156.6 L 116.7 162.2 L 124.4 169.4 L 132.2 177.7 L 140.0 186.7" />
+                                </g>
+                            </svg>
+                                <!-- Plotted points container -->
+                                <div id="manifold-collapsed-points" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                                    <!-- Dots injected via JS -->
+                                </div>
+                            </div>
+                            <div style="margin-top: 1rem; font-weight: 700; font-size: 1rem; color: #000000; letter-spacing: 1px; text-transform: uppercase;">Collapsed (Poor Expressiveness)</div>
+                        </div>
+                        
+                        <!-- Arrow: Sleek SVG -->
+                        <div style="display: flex; align-items: center; justify-content: center;">
+                            <svg width="60" height="20" viewBox="0 0 60 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 10H58M58 10L50 2M58 10L50 18" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        
+                        <!-- Right: Expressive Manifold -->
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="position: relative; width: 200px; height: 143px; overflow: visible;">
+                                <svg width="200" height="143" viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;">
+                                <g fill="none" stroke="#000000" stroke-width="0.8" style="opacity: 0.6;">
+                                    <path d="M 140.0 53.3 L 132.2 55.2 L 124.4 57.0 L 116.7 58.5 L 108.9 59.3 L 101.1 59.6 L 93.3 59.2 L 85.6 58.5 L 77.8 57.8 L 70.0 57.3 L 62.2 57.4 L 54.4 58.5 L 46.7 60.7 L 38.9 64.0 L 31.1 68.5 L 23.3 74.0 L 15.6 80.0 L 7.8 86.3 L 0.0 92.6 L -7.8 98.5 L -15.6 103.8 L -23.3 108.5 L -31.1 112.6 L -38.9 116.3 L -46.7 120.0" />
+                                    <path d="M 150.4 65.2 L 142.6 66.5 L 134.8 67.4 L 127.0 67.7 L 119.3 67.4 L 111.5 66.5 L 103.7 65.4 L 95.9 64.3 L 88.1 63.6 L 80.4 63.7 L 72.6 64.7 L 64.8 66.9 L 57.0 70.3 L 49.3 74.8 L 41.5 80.1 L 33.7 85.9 L 25.9 91.8 L 18.1 97.6 L 10.4 103.0 L 2.6 107.7 L -5.2 111.8 L -13.0 115.4 L -20.7 118.7 L -28.5 122.1 L -36.3 125.8" />
+                                    <path d="M 160.7 75.6 L 153.0 75.9 L 145.2 75.6 L 137.4 74.7 L 129.6 73.4 L 121.9 71.9 L 114.1 70.5 L 106.3 69.6 L 98.5 69.6 L 90.7 70.7 L 83.0 72.9 L 75.2 76.3 L 67.4 80.7 L 59.6 85.8 L 51.9 91.4 L 44.1 97.0 L 36.3 102.2 L 28.5 107.0 L 20.7 111.2 L 13.0 114.7 L 5.2 117.8 L -2.6 120.7 L -10.4 123.8 L -18.1 127.4 L -25.9 131.9" />
+                                    <path d="M 171.1 83.4 L 163.3 82.6 L 155.6 81.1 L 147.8 79.3 L 140.0 77.4 L 132.2 75.8 L 124.4 74.9 L 116.7 74.8 L 108.9 75.9 L 101.1 78.1 L 93.3 81.5 L 85.6 85.8 L 77.8 90.8 L 70.0 96.0 L 62.2 101.1 L 54.4 105.9 L 46.7 110.1 L 38.9 113.7 L 31.1 116.7 L 23.3 119.3 L 15.6 121.9 L 7.8 124.7 L 0.0 128.2 L -7.8 132.6 L -15.6 138.1" />
+                                    <path d="M 181.5 88.1 L 173.7 86.2 L 165.9 83.9 L 158.1 81.7 L 150.4 79.9 L 142.6 78.9 L 134.8 78.8 L 127.0 79.9 L 119.3 82.2 L 111.5 85.5 L 103.7 89.7 L 95.9 94.4 L 88.1 99.3 L 80.4 103.9 L 72.6 108.2 L 64.8 111.8 L 57.0 114.8 L 49.3 117.3 L 41.5 119.5 L 33.7 121.7 L 25.9 124.4 L 18.1 127.7 L 10.4 132.1 L 2.6 137.7 L -5.2 144.4" />
+                                    <path d="M 191.9 89.6 L 184.1 87.0 L 176.3 84.5 L 168.5 82.6 L 160.7 81.4 L 153.0 81.4 L 145.2 82.5 L 137.4 84.8 L 129.6 88.1 L 121.9 92.1 L 114.1 96.5 L 106.3 101.0 L 98.5 105.2 L 90.7 108.8 L 83.0 111.9 L 75.2 114.3 L 67.4 116.3 L 59.6 118.1 L 51.9 120.1 L 44.1 122.6 L 36.3 125.9 L 28.5 130.3 L 20.7 135.8 L 13.0 142.6 L 5.2 150.3" />
+                                    <path d="M 202.2 88.5 L 194.4 85.8 L 186.7 83.7 L 178.9 82.6 L 171.1 82.5 L 163.3 83.7 L 155.6 86.0 L 147.8 89.2 L 140.0 93.0 L 132.2 97.1 L 124.4 101.1 L 116.7 104.8 L 108.9 107.9 L 101.1 110.3 L 93.3 112.2 L 85.6 113.8 L 77.8 115.2 L 70.0 116.9 L 62.2 119.3 L 54.4 122.6 L 46.7 127.0 L 38.9 132.6 L 31.1 139.3 L 23.3 146.9 L 15.6 155.2" />
+                                    <path d="M 212.6 85.9 L 204.8 83.7 L 197.0 82.5 L 189.3 82.5 L 181.5 83.7 L 173.7 85.9 L 165.9 89.0 L 158.1 92.6 L 150.4 96.3 L 142.6 99.9 L 134.8 103.0 L 127.0 105.5 L 119.3 107.4 L 111.5 108.8 L 103.7 109.9 L 95.9 111.0 L 88.1 112.6 L 80.4 114.8 L 72.6 118.1 L 64.8 122.5 L 57.0 128.1 L 49.3 134.8 L 41.5 142.3 L 33.7 150.4 L 25.9 158.6" />
+                                    <path d="M 223.0 82.9 L 215.2 81.7 L 207.4 81.7 L 199.6 82.9 L 191.9 85.1 L 184.1 88.0 L 176.3 91.3 L 168.5 94.7 L 160.7 97.7 L 153.0 100.3 L 145.2 102.2 L 137.4 103.5 L 129.6 104.4 L 121.9 105.1 L 114.1 106.0 L 106.3 107.4 L 98.5 109.6 L 90.7 112.8 L 83.0 117.3 L 75.2 122.9 L 67.4 129.5 L 59.6 136.9 L 51.9 144.6 L 44.1 152.4 L 36.3 160.0" />
+                                    <path d="M 233.3 80.7 L 225.6 80.7 L 217.8 81.9 L 210.0 84.0 L 202.2 86.7 L 194.4 89.7 L 186.7 92.6 L 178.9 95.1 L 171.1 97.1 L 163.3 98.5 L 155.6 99.2 L 147.8 99.7 L 140.0 100.0 L 132.2 100.6 L 124.4 101.9 L 116.7 104.0 L 108.9 107.3 L 101.1 111.8 L 93.3 117.4 L 85.6 124.0 L 77.8 131.1 L 70.0 138.5 L 62.2 145.9 L 54.4 152.9 L 46.7 159.3" />
+                                    <path d="M 243.7 80.0 L 235.9 81.2 L 228.1 83.1 L 220.4 85.6 L 212.6 88.2 L 204.8 90.7 L 197.0 92.7 L 189.3 94.1 L 181.5 94.9 L 173.7 95.1 L 165.9 95.1 L 158.1 95.2 L 150.4 95.6 L 142.6 96.7 L 134.8 98.9 L 127.0 102.2 L 119.3 106.7 L 111.5 112.3 L 103.7 118.7 L 95.9 125.6 L 88.1 132.7 L 80.4 139.6 L 72.6 146.0 L 64.8 151.9 L 57.0 157.1" />
+                                    <path d="M 254.1 81.4 L 246.3 83.2 L 238.5 85.4 L 230.7 87.7 L 223.0 89.6 L 215.2 91.1 L 207.4 91.9 L 199.6 92.1 L 191.9 91.9 L 184.1 91.5 L 176.3 91.2 L 168.5 91.5 L 160.7 92.6 L 153.0 94.7 L 145.2 98.1 L 137.4 102.6 L 129.6 108.1 L 121.9 114.3 L 114.1 121.0 L 106.3 127.7 L 98.5 134.1 L 90.7 140.0 L 83.0 145.2 L 75.2 149.9 L 67.4 154.1" />
+                                    <path d="M 264.4 84.8 L 256.7 86.7 L 248.9 88.5 L 241.1 89.9 L 233.3 90.8 L 225.6 91.0 L 217.8 90.7 L 210.0 90.0 L 202.2 89.2 L 194.4 88.7 L 186.7 88.9 L 178.9 89.9 L 171.1 92.1 L 163.3 95.5 L 155.6 100.0 L 147.8 105.4 L 140.0 111.5 L 132.2 117.8 L 124.4 124.0 L 116.7 129.9 L 108.9 135.2 L 101.1 139.9 L 93.3 144.0 L 85.6 147.8 L 77.8 151.5" />
+                                    <path d="M 274.8 89.7 L 267.0 91.1 L 259.3 91.9 L 251.5 92.2 L 243.7 91.9 L 235.9 91.1 L 228.1 89.9 L 220.4 88.8 L 212.6 88.2 L 204.8 88.2 L 197.0 89.2 L 189.3 91.5 L 181.5 94.8 L 173.7 99.3 L 165.9 104.6 L 158.1 110.4 L 150.4 116.4 L 142.6 122.2 L 134.8 127.5 L 127.0 132.2 L 119.3 136.3 L 111.5 139.9 L 103.7 143.3 L 95.9 146.6 L 88.1 150.4" />
+                                    <path d="M 285.2 95.6 L 277.4 95.9 L 269.6 95.7 L 261.9 94.8 L 254.1 93.4 L 246.3 91.9 L 238.5 90.5 L 230.7 89.7 L 223.0 89.7 L 215.2 90.7 L 207.4 93.0 L 199.6 96.3 L 191.9 100.7 L 184.1 105.9 L 176.3 111.4 L 168.5 117.0 L 160.7 122.3 L 153.0 127.1 L 145.2 131.2 L 137.4 134.8 L 129.6 137.9 L 121.9 140.8 L 114.1 143.9 L 106.3 147.5 L 98.5 151.9" />
+                                    <path d="M 295.6 101.9 L 287.8 101.0 L 280.0 99.6 L 272.2 97.8 L 264.4 95.9 L 256.7 94.3 L 248.9 93.3 L 241.1 93.3 L 233.3 94.3 L 225.6 96.6 L 217.8 100.0 L 210.0 104.3 L 202.2 109.2 L 194.4 114.4 L 186.7 119.6 L 178.9 124.4 L 171.1 128.6 L 163.3 132.1 L 155.6 135.1 L 147.8 137.8 L 140.0 140.3 L 132.2 143.2 L 124.4 146.7 L 116.7 151.0 L 108.9 156.6" />
+                                    <path d="M 305.9 108.1 L 298.1 106.2 L 290.4 103.9 L 282.6 101.8 L 274.8 100.0 L 267.0 98.9 L 259.3 98.8 L 251.5 99.9 L 243.7 102.2 L 235.9 105.5 L 228.1 109.7 L 220.4 114.4 L 212.6 119.3 L 204.8 124.0 L 197.0 128.2 L 189.3 131.8 L 181.5 134.8 L 173.7 137.3 L 165.9 139.5 L 158.1 141.8 L 150.4 144.4 L 142.6 147.8 L 134.8 152.2 L 127.0 157.7 L 119.3 164.4" />
+                                    <path d="M 316.3 114.2 L 308.5 111.5 L 300.7 109.1 L 293.0 107.1 L 285.2 106.0 L 277.4 105.9 L 269.6 107.0 L 261.9 109.3 L 254.1 112.6 L 246.3 116.6 L 238.5 121.1 L 230.7 125.5 L 223.0 129.7 L 215.2 133.4 L 207.4 136.4 L 199.6 138.8 L 191.9 140.8 L 184.1 142.6 L 176.3 144.6 L 168.5 147.1 L 160.7 150.4 L 153.0 154.8 L 145.2 160.4 L 137.4 167.1 L 129.6 174.8" />
+                                    <path d="M 326.7 120.0 L 318.9 117.3 L 311.1 115.2 L 303.3 114.0 L 295.6 114.0 L 287.8 115.2 L 280.0 117.4 L 272.2 120.6 L 264.4 124.4 L 256.7 128.5 L 248.9 132.6 L 241.1 136.2 L 233.3 139.3 L 225.6 141.8 L 217.8 143.7 L 210.0 145.2 L 202.2 146.7 L 194.4 148.4 L 186.7 150.8 L 178.9 154.0 L 171.1 158.4 L 163.3 164.0 L 155.6 170.8 L 147.8 178.4 L 140.0 186.7" />
+                                    <path d="M 140.0 53.3 L 147.8 62.3 L 155.6 70.6 L 163.3 77.8 L 171.1 83.4 L 178.9 87.3 L 186.7 89.2 L 194.4 89.6 L 202.2 88.5 L 210.0 86.6 L 217.8 84.4 L 225.6 82.2 L 233.3 80.7 L 241.1 80.0 L 248.9 80.5 L 256.7 82.1 L 264.4 84.8 L 272.2 88.4 L 280.0 92.6 L 287.8 97.2 L 295.6 101.9 L 303.3 106.6 L 311.1 111.2 L 318.9 115.6 L 326.7 120.0" />
+                                    <path d="M 129.6 55.8 L 137.4 64.3 L 145.2 71.7 L 153.0 77.7 L 160.7 82.1 L 168.5 84.9 L 176.3 86.1 L 184.1 86.0 L 191.9 85.1 L 199.6 83.7 L 207.4 82.3 L 215.2 81.3 L 223.0 81.0 L 230.7 81.4 L 238.5 82.7 L 246.3 84.7 L 254.1 87.3 L 261.9 90.3 L 269.6 93.6 L 277.4 97.1 L 285.2 100.6 L 293.0 104.2 L 300.7 108.0 L 308.5 112.1 L 316.3 116.5" />
+                                    <path d="M 119.3 58.0 L 127.0 65.4 L 134.8 71.7 L 142.6 76.5 L 150.4 79.9 L 158.1 82.0 L 165.9 83.0 L 173.7 83.1 L 181.5 82.9 L 189.3 82.5 L 197.0 82.3 L 204.8 82.5 L 212.6 83.2 L 220.4 84.3 L 228.1 85.8 L 235.9 87.6 L 243.7 89.5 L 251.5 91.5 L 259.3 93.6 L 267.0 95.9 L 274.8 98.4 L 282.6 101.3 L 290.4 104.9 L 298.1 109.2 L 305.9 114.3" />
+                                    <path d="M 108.9 59.3 L 116.7 65.5 L 124.4 70.6 L 132.2 74.6 L 140.0 77.4 L 147.8 79.4 L 155.6 80.8 L 163.3 81.7 L 171.1 82.5 L 178.9 83.4 L 186.7 84.4 L 194.4 85.5 L 202.2 86.7 L 210.0 87.9 L 217.8 89.0 L 225.6 89.9 L 233.3 90.8 L 241.1 91.6 L 248.9 92.6 L 256.7 93.9 L 264.4 95.9 L 272.2 98.8 L 280.0 102.7 L 287.8 107.8 L 295.6 114.0" />
+                                    <path d="M 98.5 59.5 L 106.3 64.6 L 114.1 68.9 L 121.9 72.5 L 129.6 75.4 L 137.4 77.9 L 145.2 80.2 L 153.0 82.3 L 160.7 84.3 L 168.5 86.3 L 176.3 88.0 L 184.1 89.5 L 191.9 90.7 L 199.6 91.3 L 207.4 91.5 L 215.2 91.3 L 223.0 91.0 L 230.7 90.7 L 238.5 90.9 L 246.3 91.8 L 254.1 93.9 L 261.9 97.3 L 269.6 102.1 L 277.4 108.4 L 285.2 115.8" />
+                                    <path d="M 88.1 58.8 L 95.9 63.2 L 103.7 67.3 L 111.5 71.1 L 119.3 74.7 L 127.0 78.2 L 134.8 81.7 L 142.6 85.0 L 150.4 88.0 L 158.1 90.6 L 165.9 92.6 L 173.7 93.9 L 181.5 94.3 L 189.3 94.0 L 197.0 93.0 L 204.8 91.6 L 212.6 90.3 L 220.4 89.3 L 228.1 89.2 L 235.9 90.4 L 243.7 93.2 L 251.5 97.6 L 259.3 103.6 L 267.0 111.0 L 274.8 119.5" />
+                                    <path d="M 77.8 57.8 L 85.6 62.1 L 93.3 66.6 L 101.1 71.2 L 108.9 75.9 L 116.7 80.6 L 124.4 85.2 L 132.2 89.4 L 140.0 93.0 L 147.8 95.7 L 155.6 97.3 L 163.3 97.8 L 171.1 97.1 L 178.9 95.5 L 186.7 93.4 L 194.4 91.1 L 202.2 89.2 L 210.0 88.2 L 217.8 88.5 L 225.6 90.5 L 233.3 94.3 L 241.1 100.0 L 248.9 107.1 L 256.7 115.5 L 264.4 124.4" />
+                                    <path d="M 67.4 57.2 L 75.2 62.1 L 83.0 67.5 L 90.7 73.2 L 98.5 79.2 L 106.3 85.0 L 114.1 90.4 L 121.9 95.0 L 129.6 98.5 L 137.4 100.6 L 145.2 101.3 L 153.0 100.6 L 160.7 98.8 L 168.5 96.1 L 176.3 93.2 L 184.1 90.5 L 191.9 88.7 L 199.6 88.2 L 207.4 89.5 L 215.2 92.6 L 223.0 97.6 L 230.7 104.3 L 238.5 112.3 L 246.3 121.0 L 254.1 129.9" />
+                                    <path d="M 57.0 58.0 L 64.8 63.9 L 72.6 70.5 L 80.4 77.4 L 88.1 84.3 L 95.9 90.8 L 103.7 96.4 L 111.5 100.8 L 119.3 103.6 L 127.0 104.8 L 134.8 104.3 L 142.6 102.4 L 150.4 99.5 L 158.1 96.2 L 165.9 93.0 L 173.7 90.6 L 181.5 89.5 L 189.3 90.0 L 197.0 92.4 L 204.8 96.7 L 212.6 102.8 L 220.4 110.2 L 228.1 118.4 L 235.9 126.9 L 243.7 135.1" />
+                                    <path d="M 46.7 60.7 L 54.4 67.8 L 62.2 75.5 L 70.0 83.3 L 77.8 90.8 L 85.6 97.3 L 93.3 102.6 L 101.1 106.1 L 108.9 107.9 L 116.7 107.8 L 124.4 106.2 L 132.2 103.4 L 140.0 100.0 L 147.8 96.6 L 155.6 93.8 L 163.3 92.2 L 171.1 92.1 L 178.9 93.9 L 186.7 97.4 L 194.4 102.7 L 202.2 109.2 L 210.0 116.7 L 217.8 124.5 L 225.6 132.2 L 233.3 139.3" />
+                                    <path d="M 36.3 65.4 L 44.1 73.6 L 51.9 82.1 L 59.6 90.3 L 67.4 97.7 L 75.2 103.8 L 83.0 108.1 L 90.7 110.5 L 98.5 111.0 L 106.3 109.9 L 114.1 107.4 L 121.9 104.3 L 129.6 101.0 L 137.4 98.1 L 145.2 96.2 L 153.0 95.7 L 160.7 96.9 L 168.5 99.7 L 176.3 104.1 L 184.1 109.7 L 191.9 116.2 L 199.6 123.1 L 207.4 130.0 L 215.2 136.6 L 223.0 142.5" />
+                                    <path d="M 25.9 72.1 L 33.7 80.9 L 41.5 89.7 L 49.3 97.7 L 57.0 104.4 L 64.8 109.4 L 72.6 112.5 L 80.4 113.8 L 88.1 113.3 L 95.9 111.5 L 103.7 108.8 L 111.5 105.8 L 119.3 103.2 L 127.0 101.3 L 134.8 100.7 L 142.6 101.4 L 150.4 103.5 L 158.1 107.0 L 165.9 111.6 L 173.7 117.0 L 181.5 122.8 L 189.3 128.7 L 197.0 134.5 L 204.8 139.8 L 212.6 144.7" />
+                                    <path d="M 15.6 80.0 L 23.3 89.0 L 31.1 97.3 L 38.9 104.5 L 46.7 110.1 L 54.4 113.9 L 62.2 115.9 L 70.0 116.2 L 77.8 115.2 L 85.6 113.3 L 93.3 111.0 L 101.1 108.9 L 108.9 107.3 L 116.7 106.7 L 124.4 107.1 L 132.2 108.8 L 140.0 111.5 L 147.8 115.0 L 155.6 119.2 L 163.3 123.8 L 171.1 128.6 L 178.9 133.3 L 186.7 137.9 L 194.4 142.3 L 202.2 146.7" />
+                                    <path d="M 5.2 88.4 L 13.0 96.9 L 20.7 104.3 L 28.5 110.3 L 36.3 114.7 L 44.1 117.5 L 51.9 118.7 L 59.6 118.6 L 67.4 117.6 L 75.2 116.3 L 83.0 114.9 L 90.7 113.9 L 98.5 113.6 L 106.3 114.0 L 114.1 115.3 L 121.9 117.3 L 129.6 119.9 L 137.4 122.9 L 145.2 126.2 L 153.0 129.7 L 160.7 133.2 L 168.5 136.8 L 176.3 140.6 L 184.1 144.7 L 191.9 149.1" />
+                                    <path d="M -5.2 96.6 L 2.6 104.0 L 10.4 110.2 L 18.1 115.1 L 25.9 118.5 L 33.7 120.5 L 41.5 121.5 L 49.3 121.6 L 57.0 121.4 L 64.8 121.0 L 72.6 120.8 L 80.4 121.0 L 88.1 121.7 L 95.9 122.8 L 103.7 124.3 L 111.5 126.1 L 119.3 128.0 L 127.0 130.0 L 134.8 132.2 L 142.6 134.4 L 150.4 136.9 L 158.1 139.9 L 165.9 143.4 L 173.7 147.7 L 181.5 152.8" />
+                                    <path d="M -15.6 103.8 L -7.8 110.0 L 0.0 115.1 L 7.8 119.0 L 15.6 121.9 L 23.3 123.9 L 31.1 125.2 L 38.9 126.2 L 46.7 127.0 L 54.4 127.8 L 62.2 128.8 L 70.0 129.9 L 77.8 131.1 L 85.6 132.3 L 93.3 133.4 L 101.1 134.4 L 108.9 135.2 L 116.7 136.1 L 124.4 137.0 L 132.2 138.4 L 140.0 140.3 L 147.8 143.2 L 155.6 147.1 L 163.3 152.2 L 171.1 158.4" />
+                                    <path d="M -25.9 109.9 L -18.1 115.0 L -10.4 119.3 L -2.6 122.8 L 5.2 125.8 L 13.0 128.3 L 20.7 130.6 L 28.5 132.7 L 36.3 134.7 L 44.1 136.6 L 51.9 138.4 L 59.6 139.9 L 67.4 141.0 L 75.2 141.7 L 83.0 141.9 L 90.7 141.7 L 98.5 141.3 L 106.3 141.1 L 114.1 141.2 L 121.9 142.2 L 129.6 144.3 L 137.4 147.7 L 145.2 152.5 L 153.0 158.7 L 160.7 166.2" />
+                                    <path d="M -36.3 115.1 L -28.5 119.5 L -20.7 123.6 L -13.0 127.4 L -5.2 131.0 L 2.6 134.5 L 10.4 138.0 L 18.1 141.3 L 25.9 144.3 L 33.7 146.9 L 41.5 148.9 L 49.3 150.2 L 57.0 150.6 L 64.8 150.3 L 72.6 149.3 L 80.4 147.9 L 88.1 146.6 L 95.9 145.6 L 103.7 145.5 L 111.5 146.7 L 119.3 149.5 L 127.0 153.9 L 134.8 159.9 L 142.6 167.3 L 150.4 175.8" />
+                                    <path d="M -46.7 120.0 L -38.9 124.4 L -31.1 128.8 L -23.3 133.4 L -15.6 138.1 L -7.8 142.8 L 0.0 147.4 L 7.8 151.6 L 15.6 155.2 L 23.3 157.9 L 31.1 159.5 L 38.9 160.0 L 46.7 159.3 L 54.4 157.8 L 62.2 155.6 L 70.0 153.4 L 77.8 151.5 L 85.6 150.4 L 93.3 150.8 L 101.1 152.7 L 108.9 156.6 L 116.7 162.2 L 124.4 169.4 L 132.2 177.7 L 140.0 186.7" />
+                                </g>
+                            </svg>
+                                <!-- Plotted points container -->
+                                <div id="manifold-expressive-points" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                                    <!-- Dots injected via JS -->
+                                </div>
+                            </div>
+                            <div style="margin-top: 1rem; font-weight: 700; font-size: 1rem; color: #000000; letter-spacing: 1px; text-transform: uppercase;">Separated (High Expressiveness)</div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <p style="text-align: center; font-size: 1.05rem; color: #475569; max-width: 800px; margin: 2.5rem auto 0; line-height: 1.6;">
+                    <strong>Expressiveness ensures the model does not collapse all data points together.</strong> It must preserve enough discriminative information to clearly separate different biological structures across the manifold.
+                </p>
+
+                
+                <!-- 2D Trade-off Plots -->
+                <div style="margin-top: 4.5rem; padding-top: 2.5rem; border-top: 1px dashed rgba(59,130,246,0.3);">
+                    <div style="text-align: center; font-size: 1.6rem; font-weight: 700; color: #334155; margin-bottom: 3.5rem; letter-spacing: -0.5px;">
+                        Theoretical Goals vs <span style="background: linear-gradient(120deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;">Empirical</span> Reality
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4rem; padding: 0 1rem;">
+                        
+                        <!-- Plot 1: Theory -->
+                        <div style="display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 600px;">
+                            <div style="font-weight: 700; color: #64748b; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">Theoretical Trade-off</div>
+                            
+                            <div style="position: relative; width: 100%; height: 350px; background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.1)); border-left: 4px solid #1e293b; border-bottom: 4px solid #1e293b; border-radius: 4px 16px 4px 4px; padding: 2rem; box-sizing: border-box; margin-bottom: 2rem;">
+                                
+                                <!-- Y-axis Label -->
+                                <div style="position: absolute; left: -5rem; top: 0; bottom: 0; width: 4rem; display: flex; align-items: center; justify-content: center;">
+                                    <div style="transform: rotate(-90deg); font-weight: 700; color: #475569; letter-spacing: 1px; text-transform: uppercase; font-size: 0.9rem; white-space: nowrap;">Expressiveness</div>
+                                </div>
+                                
+                                <!-- Y-axis Arrow -->
+                                <svg style="position: absolute; left: -12px; top: -14px; width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="#1e293b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                                
+                                <!-- X-axis Label -->
+                                <div style="position: absolute; bottom: -2.5rem; left: 50%; transform: translateX(-50%); font-weight: 700; color: #475569; letter-spacing: 1px; text-transform: uppercase; font-size: 0.9rem;">Invariance</div>
+                                
+                                <!-- X-axis Arrow -->
+                                <svg style="position: absolute; right: -14px; bottom: -12px; width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="#1e293b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                
+                                <!-- Grid Lines (Subtle) -->
+                                <div style="position: absolute; left: 0; right: 0; bottom: 33%; height: 1px; border-top: 1px dashed rgba(30,41,59,0.15);"></div>
+                                <div style="position: absolute; left: 0; right: 0; bottom: 66%; height: 1px; border-top: 1px dashed rgba(30,41,59,0.15);"></div>
+                                <div style="position: absolute; bottom: 0; top: 0; left: 33%; width: 1px; border-left: 1px dashed rgba(30,41,59,0.15);"></div>
+                                <div style="position: absolute; bottom: 0; top: 0; left: 66%; width: 1px; border-left: 1px dashed rgba(30,41,59,0.15);"></div>
+
+                                <!-- Representation Collapse (Bottom Right) -->
+                                <div style="position: absolute; right: 2rem; bottom: 2rem; display: flex; flex-direction: column; align-items: center; z-index: 10;">
+                                    <div style="width: 16px; height: 16px; background-color: #ef4444; border-radius: 50%; border: 2px solid white;"></div>
+                                    <div style="margin-top: 0.75rem; font-weight: 700; font-size: 0.85rem; color: #ef4444; text-align: center; white-space: nowrap; line-height: 1.2;">Representation<br>Collapse</div>
+                                </div>
+
+                                <!-- Overfitting / Sensitivity (Top Left) -->
+                                <div style="position: absolute; left: 2rem; top: 2rem; display: flex; flex-direction: column; align-items: center; z-index: 10;">
+                                    <div style="width: 16px; height: 16px; background-color: #f59e0b; border-radius: 50%; border: 2px solid white;"></div>
+                                    <div style="margin-top: 0.75rem; font-weight: 700; font-size: 0.85rem; color: #d97706; text-align: center; white-space: nowrap; line-height: 1.2;">Rotation<br>Sensitive</div>
+                                </div>
+
+                                <!-- Ideal Representation (Top Right) -->
+                                <div style="position: absolute; right: 2rem; top: 2rem; display: flex; flex-direction: column; align-items: center; z-index: 20;">
+                                    <div style="width: 22px; height: 22px; background-color: #10b981; border-radius: 50%; border: 3px solid white; position: relative;">
+                                        <!-- Pulse ring -->
+                                        <div style="position: absolute; top: -6px; left: -6px; right: -6px; bottom: -6px; border-radius: 50%; border: 2px solid #10b981; opacity: 0.5; animation: pulse 2s infinite;"></div>
+                                    </div>
+                                    <div style="margin-top: 0.75rem; font-weight: 800; font-size: 1rem; color: #059669; text-align: center; white-space: nowrap; text-transform: uppercase; background: white; padding: 0.2rem 0.6rem; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">Ideal (INVEX)</div>
+                                </div>
+                                
+                                <!-- Center Watermark -->
+                                <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 5rem; font-weight: 900; color: rgba(255,255,255,0.4); text-shadow: 0 4px 15px rgba(0,0,0,0.03); pointer-events: none; letter-spacing: 2px;">
+                                    INVEX
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Plot 2: Empirical -->
+                        <div style="display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 600px;">
+                            <div style="font-weight: 700; color: #64748b; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">Empirical Rankings</div>
+                            
+                            <div style="position: relative; width: 100%; height: 350px; background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.1)); border-left: 4px solid #1e293b; border-bottom: 4px solid #1e293b; border-radius: 4px 16px 4px 4px; padding: 2rem; box-sizing: border-box; margin-bottom: 2rem;">
+                                
+                                <!-- Y-axis Label -->
+                                <div style="position: absolute; left: -5rem; top: 0; bottom: 0; width: 4rem; display: flex; align-items: center; justify-content: center;">
+                                    <div style="transform: rotate(-90deg); font-weight: 700; color: #475569; letter-spacing: 1px; text-transform: uppercase; font-size: 0.9rem; white-space: nowrap;">Expressiveness</div>
+                                </div>
+                                
+                                <!-- Y-axis Arrow -->
+                                <svg style="position: absolute; left: -12px; top: -14px; width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="#1e293b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                                
+                                <!-- X-axis Label -->
+                                <div style="position: absolute; bottom: -2.5rem; left: 50%; transform: translateX(-50%); font-weight: 700; color: #475569; letter-spacing: 1px; text-transform: uppercase; font-size: 0.9rem;">Invariance</div>
+                                
+                                <!-- X-axis Arrow -->
+                                <svg style="position: absolute; right: -14px; bottom: -12px; width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="#1e293b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                
+                                <!-- Grid Lines (Subtle) -->
+                                <div style="position: absolute; left: 0; right: 0; bottom: 33%; height: 1px; border-top: 1px dashed rgba(30,41,59,0.15);"></div>
+                                <div style="position: absolute; left: 0; right: 0; bottom: 66%; height: 1px; border-top: 1px dashed rgba(30,41,59,0.15);"></div>
+                                <div style="position: absolute; bottom: 0; top: 0; left: 33%; width: 1px; border-left: 1px dashed rgba(30,41,59,0.15);"></div>
+                                <div style="position: absolute; bottom: 0; top: 0; left: 66%; width: 1px; border-left: 1px dashed rgba(30,41,59,0.15);"></div>
+
+                                <!-- Encoder 1 -->
+                                <div style="position: absolute; left: 20%; bottom: 20%; display: flex; flex-direction: column; align-items: center; z-index: 10;">
+                                    <div style="width: 14px; height: 14px; background-color: #94a3b8; border-radius: 50%; border: 2px solid white;"></div>
+                                    <div style="margin-top: 0.5rem; font-weight: 600; font-size: 0.85rem; color: #64748b; text-align: center; white-space: nowrap; line-height: 1.2;">Encoder 1<br><span style="font-size: 0.75rem">(Rank 3)</span></div>
+                                </div>
+
+                                <!-- Encoder 2 -->
+                                <div style="position: absolute; left: 45%; bottom: 45%; display: flex; flex-direction: column; align-items: center; z-index: 10;">
+                                    <div style="width: 18px; height: 18px; background-color: #6366f1; border-radius: 50%; border: 2px solid white;"></div>
+                                    <div style="margin-top: 0.5rem; font-weight: 700; font-size: 0.9rem; color: #4f46e5; text-align: center; white-space: nowrap; line-height: 1.2;">Encoder 2<br><span style="font-size: 0.75rem">(Rank 2)</span></div>
+                                </div>
+
+                                <!-- Encoder 3 -->
+                                <div style="position: absolute; right: 25%; top: 30%; display: flex; flex-direction: column; align-items: center; z-index: 20;">
+                                    <div style="width: 22px; height: 22px; background-color: #8b5cf6; border-radius: 50%; border: 3px solid white; position: relative;"></div>
+                                    <div style="margin-top: 0.75rem; font-weight: 800; font-size: 1rem; color: #7c3aed; text-align: center; white-space: nowrap; line-height: 1.2;">Encoder 3<br><span style="font-size: 0.8rem">(Rank 1)</span></div>
+                                </div>
+                                
+                                <!-- Center Watermark -->
+                                <!-- Removed watermark per user request -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+</div>
+            </div>
+            </div>
+            </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ============================================================
+         ENCODERS SECTION
+    ============================================================ -->
+    <section id="encoders" class="animate-up" style="padding: 3rem 2rem; max-width: 1200px; margin: 0 auto; border-bottom: 1px solid #eee;">
+        <h2 class="section-title">28 Evaluated Foundation Models</h2>
+        <p class="section-desc" style="max-width: 800px; margin-bottom: 3rem;">
+            INVEX systematically audits the top pathology foundation models in the field across different pretraining objectives and architectures.
+        </p>
+
+        <div style="background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 4rem; overflow-x: auto;">
+            <table class="premium-table">
+                <thead>
+                    <tr>
+                        <th>Encoder</th>
+                        <th>Backbone</th>
+                        <th>Training</th>
+                        <th>Dim</th>
+                        <th style="text-align: center;">Paper</th>
+                        <th style="text-align: center;">Code/Model</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    
+                    <tr><td class="font-bold" class="font-bold"><code>uni_v1</code></td><td>ViT-L/16</td><td>DINOv2</td><td>1024</td><td><a href="https://www.nature.com/articles/s41591-024-02857-3" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://github.com/mahmoodlab/UNI" target="_blank" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>uni_v2</code></td><td>ViT-H/14</td><td>DINOv2</td><td>1536</td><td><a href="https://www.nature.com/articles/s41591-024-02857-3" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://github.com/mahmoodlab/UNI" target="_blank" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>virchow</code></td><td>ViT-H/14</td><td>DINOv2</td><td>2560</td><td><a href="https://arxiv.org/abs/2309.07778" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://huggingface.co/paige-ai/Virchow" target="_blank" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face"></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>virchow2</code></td><td>ViT-H/14</td><td>DINOv2</td><td>2560</td><td><a href="https://arxiv.org/abs/2408.00738" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://huggingface.co/paige-ai/Virchow2" target="_blank" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face"></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>gigapath</code></td><td>ViT-g/14</td><td>DINOv2</td><td>1536</td><td><a href="https://www.nature.com/articles/s41586-024-07441-w" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://github.com/prov-gigapath/prov-gigapath" target="_blank" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>hoptimus0</code></td><td>ViT-g/14</td><td>DINOv2-style</td><td>1536</td><td><a href="https://arxiv.org/abs/2404.14814" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://github.com/bioptimus/releases/tree/main/models/h-optimus/v0" target="_blank" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>hoptimus1</code></td><td>ViT-g/14</td><td>DINOv2-style</td><td>1536</td><td><a href="https://arxiv.org/abs/2404.14814" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://github.com/bioptimus/releases/tree/main/models/h-optimus/v0" target="_blank" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>phikon</code></td><td>ViT-B/16</td><td>iBOT</td><td>768</td><td><a href="https://www.medrxiv.org/content/10.1101/2023.07.21.23292757v2" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://huggingface.co/owkin/phikon" target="_blank" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face"></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>phikon_v2</code></td><td>ViT-L/16</td><td>DINOv2</td><td>1024</td><td><a href="https://www.medrxiv.org/content/10.1101/2023.07.21.23292757v2" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://huggingface.co/owkin/phikon" target="_blank" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face"></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>hibou_l</code></td><td>ViT-L/14</td><td>DINOv2</td><td>1024</td><td><a href="https://arxiv.org/abs/2406.05074" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://huggingface.co/histai/hibou-L" target="_blank" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face"></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>gpfm</code></td><td>ViT-L</td><td>Distillation</td><td>1024</td><td><span>-</span></td><td><a href="https://huggingface.co/majiabo/GPFM" target="_blank" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face"></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>h0-mini</code></td><td>ViT-B/14</td><td>Distillation</td><td>768</td><td><a href="https://arxiv.org/abs/2404.14814" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://github.com/bioptimus/releases/tree/main/models/h-optimus/v0" target="_blank" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>midnight12k</code></td><td>ViT-L/14</td><td>DINOv2</td><td>1536</td><td><span>-</span></td><td><a href="https://github.com/kaiko-ai/Midnight" target="_blank" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>openmidnight</code></td><td>ViT-L/14</td><td>DINOv2</td><td>1536</td><td><span>-</span></td><td><a href="https://github.com/kaiko-ai/Midnight" target="_blank" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>kaiko-vitb8</code></td><td>ViT-B/8</td><td>DINO</td><td>768</td><td><a href="https://arxiv.org/abs/2405.00000" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://github.com/kaiko-ai" target="_blank" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>kaiko-vitb16</code></td><td>ViT-B/16</td><td>DINO</td><td>768</td><td><a href="https://arxiv.org/abs/2405.00000" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://github.com/kaiko-ai" target="_blank" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>kaiko-vits8</code></td><td>ViT-S/8</td><td>DINO</td><td>384</td><td><a href="https://arxiv.org/abs/2405.00000" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://github.com/kaiko-ai" target="_blank" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>kaiko-vits16</code></td><td>ViT-S/16</td><td>DINO</td><td>384</td><td><a href="https://arxiv.org/abs/2405.00000" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://github.com/kaiko-ai" target="_blank" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>kaiko-vitl14</code></td><td>ViT-L/14</td><td>DINOv2</td><td>1024</td><td><a href="https://arxiv.org/abs/2405.00000" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://github.com/kaiko-ai" target="_blank" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>lunit-vits8</code></td><td>ViT-S/8</td><td>DINO</td><td>384</td><td><a href="https://arxiv.org/abs/2212.04690" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://github.com/lunit-io/lunit-pathology" target="_blank" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>genbio-pathfm</code></td><td>ViT-L</td><td>SSL</td><td>4608</td><td><span>-</span></td><td><a href="https://huggingface.co/genbio-ai/genbio-pathfm" target="_blank" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face"></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>conch_v1</code></td><td>ViT-B/16</td><td>Vision-Language</td><td>512</td><td><a href="https://www.nature.com/articles/s41591-024-02856-4" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://github.com/mahmoodlab/CONCH" target="_blank" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>conch_v15</code></td><td>ViT</td><td>Vision-Language</td><td>768</td><td><a href="https://www.nature.com/articles/s41591-024-02856-4" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://github.com/mahmoodlab/CONCH" target="_blank" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>musk</code></td><td>ViT-L</td><td>Vision-Language</td><td>1024</td><td><a href="https://www.nature.com/articles/s41586-024-08378-w" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><a href="https://huggingface.co/xiangjx/musk" target="_blank" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face"></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>ctranspath</code></td><td>CNN+Swin-T</td><td>SRCL Contrastive</td><td>768</td><td><a href="https://www.sciencedirect.com/science/article/pii/S1361841522002043" target="_blank" title="Paper"><i class="fas fa-file-pdf"></i></a></td><td><a href="https://github.com/Xiyue-Wang/TransPath" target="_blank" title="Code Repository"><i class="fab fa-github"></i></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>resnet50</code></td><td>ResNet-50</td><td>ImageNet</td><td>1024</td><td><a href="https://arxiv.org/abs/1512.03385" target="_blank" title="Paper"><i class="ai ai-arxiv"></i></a></td><td><span>-</span></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>gemma4-e4b</code></td><td>Gemma-3n</td><td>General VLM</td><td>768</td><td><span>-</span></td><td><a href="https://huggingface.co/google/gemma-4-E4B-it" target="_blank" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face"></a></td></tr>
+                    <tr><td class="font-bold" class="font-bold"><code>gemma4-26b</code></td><td>Gemma</td><td>General VLM</td><td>1152</td><td><span>-</span></td><td><a href="https://huggingface.co/google/gemma-4-26B-A4B-it" target="_blank" title="Model Repository"><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face"></a></td></tr>
+                
+                
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         DATASETS SECTION
+    ============================================================ -->
+    <section id="datasets" class="animate-up" style="padding: 3rem 2rem; max-width: 1200px; margin: 0 auto;">
+        <h2 class="section-title">16 Patch-Level Benchmark Datasets</h2>
+        <p class="section-desc" style="max-width: 800px; margin-bottom: 3rem;">
+            A rigorous collection of public cohorts spanning multiple organs, magnifications, and downstream task classes.
+        </p>
+        
+        <div style="background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow-x: auto;">
+            <table class="premium-table">
+                <thead>
+                    <tr>
+                        <th>Dataset</th>
+                        <th>Organ</th>
+                        <th>Task</th>
+                        <th>Classes</th>
+                        <th>Patches</th>
+                        <th>Mag</th>
+                        <th style="text-align: center;">Source</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    
+                    <tr><td class="font-bold" class="font-bold">MHIST</td><td>Colorectal</td><td>Polyp type</td><td>2</td><td>3,152</td><td>20×</td><td><a href="https://bmirds.github.io/MHIST/" target="_blank" class="btn btn-secondary"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
+                    <tr><td class="font-bold" class="font-bold">CHAOYANG</td><td>Colon</td><td>Tissue type</td><td>4</td><td>6,160</td><td>20×</td><td><a href="https://bupt-ai-cz.github.io/HSA-NRL/" target="_blank" class="btn btn-secondary"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
+                    <tr><td class="font-bold" class="font-bold">WSSS4LUAD</td><td>Lung</td><td>Tissue type</td><td>3</td><td>4,693</td><td>40×</td><td><a href="https://wsss4luad.grand-challenge.org/" target="_blank" class="btn btn-secondary"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
+                    <tr><td class="font-bold" class="font-bold">NCT-CRC-VAL</td><td>Colorectal</td><td>Tissue type</td><td>9</td><td>7,180</td><td>20×</td><td><a href="https://zenodo.org/records/1214456" target="_blank" class="btn btn-secondary"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
+                    <tr><td class="font-bold" class="font-bold">BreaKHis</td><td>Breast</td><td>Benign/malignant</td><td>2</td><td>7,909</td><td>Multi</td><td><a href="https://web.inf.ufpr.br/vri/databases/breast-cancer-histopathological-database-breakhis/" target="_blank" class="btn btn-secondary"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
+                    <tr><td class="font-bold" class="font-bold">LC25000-COLON</td><td>Colon</td><td>Tumor benign/adeno</td><td>2</td><td>10,000</td><td>20×</td><td><a href="https://github.com/tampapath/lung_colon_image_set" target="_blank" class="btn btn-secondary"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
+                    <tr><td class="font-bold" class="font-bold">SICAPv2</td><td>Prostate</td><td>Gleason grading</td><td>4</td><td>12,081</td><td>10×</td><td><a href="https://data.mendeley.com/datasets/9xxm58dvs3/2" target="_blank" class="btn btn-secondary"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
+                    <tr><td class="font-bold" class="font-bold">LC25000-LUNG</td><td>Lung</td><td>Tumor subtype</td><td>3</td><td>15,000</td><td>20×</td><td><a href="https://github.com/tampapath/lung_colon_image_set" target="_blank" class="btn btn-secondary"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
+                    <tr><td class="font-bold" class="font-bold">CCRCC-Lymphocyte</td><td>Kidney (ccRCC)</td><td>Immune vs tumor</td><td>2</td><td>25,095</td><td>20×</td><td><a href="https://zenodo.org/records/7898308" target="_blank" class="btn btn-secondary"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
+                    <tr><td class="font-bold" class="font-bold">CCRCC-Tissue</td><td>Kidney (ccRCC)</td><td>Tissue type</td><td>6</td><td>52,713</td><td>20×</td><td><a href="https://zenodo.org/records/7898308" target="_blank" class="btn btn-secondary"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
+                    <tr><td class="font-bold" class="font-bold">digestPath</td><td>Colon/GI</td><td>Cancerous/non</td><td>2</td><td>70,379</td><td>20×</td><td><a href="https://digestpath2019.grand-challenge.org/" target="_blank" class="btn btn-secondary"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
+                    <tr><td class="font-bold" class="font-bold">NCT-CRC</td><td>Colorectal</td><td>Tissue type (train)</td><td>9</td><td>107,180</td><td>20×</td><td><a href="https://zenodo.org/records/1214456" target="_blank" class="btn btn-secondary"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
+                    <tr><td class="font-bold" class="font-bold">Kather-MSI-CRC</td><td>Colorectal</td><td>MSI/MSS</td><td>2</td><td>192,312</td><td>20×</td><td><a href="https://zenodo.org/records/2530835" target="_blank" class="btn btn-secondary"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
+                    <tr><td class="font-bold" class="font-bold">Kather-MSI-STAD</td><td>Stomach</td><td>MSI/MSS</td><td>2</td><td>218,578</td><td>20×</td><td><a href="https://zenodo.org/records/2530835" target="_blank" class="btn btn-secondary"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
+                    <tr><td class="font-bold" class="font-bold">TCGA-TILs</td><td>Pan-cancer</td><td>TIL detection</td><td>2</td><td>227,699</td><td>20×</td><td><a href="https://doi.org/10.5281/zenodo.6604094" target="_blank" class="btn btn-secondary"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
+                    <tr><td class="font-bold" class="font-bold">PCam</td><td>Lymph node</td><td>Metastasis</td><td>2</td><td>327,680</td><td>10×</td><td><a href="https://github.com/basveeling/pcam" target="_blank" class="btn btn-secondary"><i class="fas fa-external-link-alt"></i> Link</a></td></tr>
+                
+                
+                </tbody>
+            </table>
+        </div>
+    </section>
 
     <footer style="background: var(--dark); color: white; text-align: center; padding: 3rem 2rem; margin-top: 4rem;">
-        <p style="opacity: 0.7;">&copy; 2026 Anonymous Submission. All rights reserved.</p>
+        <p style="opacity: 0.7; margin: 0;">&copy; 2026 Anonymous Submission. All rights reserved.</p>
     </footer>
 
     <script src="script.js"></script>
-
-    <script type="module" src="js/app.js"></script>
 </body>
-
-
 </html>
