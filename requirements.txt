@@ -7,6 +7,6 @@ h5py==3.16.0
 matplotlib==3.10.9
 Pillow==12.2.0
 
-# GPU stage only (rotated re-embedding, phase16); not needed to reproduce figures/tables
+# GPU stage only (rotated re-embedding, invariance); not needed to reproduce figures/tables
 # torch==2.5.1
 # timm==0.9.16

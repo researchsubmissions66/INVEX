@@ -8,8 +8,8 @@ Examples:
     python main.py invariance --encoder uni_v2 --save_emb  # rotation-invariance (GPU)
     python main.py analyze                                 # aggregate invariance results
     python main.py probabilistic                           # probabilistic combined metric
-    python main.py reproducibility                         # reproducibility + downstream oracle
-    python main.py knn                                     # KNN oracle
+    python main.py linear_probe_oracle                         # linear_probe_oracle + downstream oracle
+    python main.py knn_probe_oracle                                     # KNN oracle
     python main.py money_plot                              # consensus 'money plot'
 
 Each phase is a module under pipeline/; it is run as __main__ with the remaining
@@ -23,11 +23,11 @@ if ROOT not in sys.path:
 
 PHASES = {
     "money_plot":      "pipeline.money_plot",
-    "reproducibility": "pipeline.reproducibility",
+    "linear_probe_oracle": "pipeline.linear_probe_oracle",
     "invariance":      "pipeline.invariance",
     "analyze":         "pipeline.analyze",
     "probabilistic":   "pipeline.probabilistic",
-    "knn":             "pipeline.knn",
+    "knn_probe_oracle":             "pipeline.knn_probe_oracle",
 }
 
 

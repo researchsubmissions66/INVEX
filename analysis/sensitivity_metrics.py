@@ -40,7 +40,7 @@ def per_dataset_intrinsic(encs, datasets, sub=3000, seed=123):
 
 def run():
     T = vision_only(load_metrics()); auc = T.auc
-    d16 = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.join(OUT, "phase16_invariance_*.csv"))
+    d16 = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.join(OUT, "invariance_*.csv"))
                      if "summary" not in f], ignore_index=True)
     d16 = d16[~d16.encoder.isin(VLM)]
     ret_pd = d16[d16["transform"].isin(ROT)].groupby(["dataset", "encoder"])["retention@10"].mean()  # per ds

@@ -66,8 +66,8 @@ def datasets_csv():
 
 
 def encoders_csv():
-    inv = set(os.path.basename(f)[len("phase16_invariance_"):-4]
-              for f in glob.glob(os.path.join(ROOT, "results", "phase16_invariance_*.csv")) if "summary" not in f)
+    inv = set(os.path.basename(f)[len("invariance_"):-4]
+              for f in glob.glob(os.path.join(ROOT, "results", "invariance_*.csv")) if "summary" not in f)
     rows = []
     for e in sorted(FAMILY, key=lambda x: (FAMILY[x], x)):
         dim = None

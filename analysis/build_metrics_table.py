@@ -2,13 +2,13 @@
 Build the master per-encoder metrics table -> results/encoder_metrics.csv.
 
 One row per encoder with every axis the paper uses, assembled from the primary artifacts:
-  retention   : rotation invariance (retention@10, mean over rot90/180/270 & 16 datasets)  [phase16]
-  ret_hflip   : hflip-control retention (near-null)                                          [phase16]
-  ret_stain   : stain-control retention (near-null)                                          [phase16]
+  retention   : rotation invariance (retention@10, mean over rot90/180/270 & 16 datasets)  [invariance]
+  ret_hflip   : hflip-control retention (near-null)                                          [invariance]
+  ret_stain   : stain-control retention (near-null)                                          [invariance]
   effrank     : discriminability (RankMe effective rank, recomputed from cached features)
-  Q_vmf       : vMF log-likelihood-ratio quality (dimension-robust)                          [phase17]
-  auc         : downstream oracle (patient-grouped linear probe, mean over 16 datasets)      [phase15]
-  auc_knn     : second oracle (kNN probe), if available                                      [phase18]
+  Q_vmf       : vMF log-likelihood-ratio quality (dimension-robust)                          [probabilistic]
+  auc         : downstream oracle (patient-grouped linear probe, mean over 16 datasets)      [linear_probe_oracle]
+  auc_knn     : second oracle (kNN probe), if available                                      [knn]
   combined    : z(retention) + z(effrank)  (z over the invariance roster)
   family, dim
 
@@ -37,21 +37,21 @@ def _effrank(enc, datasets, sub=3000, seed=123):
 
 
 def build():
-    # --- invariance (phase16) ---
-    d16 = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.join(OUT, "phase16_invariance_*.csv"))
+    # --- invariance (invariance) ---
+    d16 = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.join(OUT, "invariance_*.csv"))
                      if "summary" not in f], ignore_index=True)
     ret_r = lambda tf: d16[d16["transform"].isin(tf)].groupby("encoder")["retention@10"].mean()
     retention = ret_r(ROT); ret_hflip = ret_r(["hflip"]); ret_stain = ret_r(["stain_hed"])
     datasets = sorted(d16.dataset.unique())
 
-    # --- oracle (phase15) + kNN oracle (phase18) ---
-    auc = pd.read_csv(os.path.join(OUT, "phase15_scores.csv")).groupby("encoder").auc.mean()
-    knn_p = os.path.join(OUT, "phase18_knn_scores.csv")
+    # --- oracle (linear_probe_oracle) + kNN oracle (knn) ---
+    auc = pd.read_csv(os.path.join(OUT, "linear_probe_oracle_scores.csv")).groupby("encoder").auc.mean()
+    knn_p = os.path.join(OUT, "knn_probe_oracle_scores.csv")
     auc_knn = (pd.read_csv(knn_p).groupby("encoder").knn_auc.mean()
                if os.path.exists(knn_p) else pd.Series(dtype=float))
 
-    # --- vMF (phase17_prob_scores) ---
-    vmf_p = os.path.join(OUT, "phase17_prob_scores.csv")
+    # --- vMF (probabilistic_prob_scores) ---
+    vmf_p = os.path.join(OUT, "probabilistic_prob_scores.csv")
     Q_vmf = (pd.read_csv(vmf_p).groupby("encoder").Q_vmf.mean()
              if os.path.exists(vmf_p) else pd.Series(dtype=float))
 

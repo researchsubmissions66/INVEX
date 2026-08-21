@@ -1,5 +1,5 @@
 """
-Phase 16 — First-principles invariance metric (biology-to-nuisance).
+Invariance — First-principles invariance metric (biology-to-nuisance).
 
 Idea: a good pathology encoder honors the transformations tissue itself is invariant to
 — exact dihedral SYMMETRIES (rotation/reflection: tissue has no canonical orientation) and
@@ -44,12 +44,13 @@ class TfDS(Dataset):
         return self.t(img), i
 
 
-def embed(enc, ds_obj, bs, precision):
+def embed(enc, ds_obj, bs, precision, device):
     dl = DataLoader(ds_obj, batch_size=bs, num_workers=4, shuffle=False, pin_memory=True)
     out = []
-    with torch.inference_mode(), torch.autocast("cuda", dtype=precision):
+    device_type = 'cuda' if 'cuda' in str(device) else 'cpu'
+    with torch.inference_mode(), torch.autocast(device_type, dtype=precision):
         for x, _ in dl:
-            out.append(enc(x.cuda(non_blocking=True)).float().cpu().numpy())
+            out.append(enc(x.to(device, non_blocking=True)).float().cpu().numpy())
     return np.concatenate(out)
 
 
@@ -80,10 +81,11 @@ def main():
     P.add_argument("--seed", type=int, default=42)
     P.add_argument("--save_emb", action="store_true", help="save transformed embeddings (fp16) for CPU re-use")
     P.add_argument("--emb_dir", default="/path/to/emb_cache")
+    P.add_argument("--device", default="cuda", help="Device to run on (e.g., cuda:0, cpu)")
     a = P.parse_args()
 
     from trident.patch_encoder_models.load import encoder_factory
-    enc = encoder_factory(a.encoder); enc.eval().cuda()
+    enc = encoder_factory(a.encoder); enc.eval().to(a.device)
     transform, precision = enc.eval_transforms, enc.precision
     bs = 64 if a.encoder == "musk" else a.bs
     rows_out = []
@@ -119,7 +121,7 @@ def main():
 
         for tname, tfn in ap.INVARIANCE_TRANSFORMS.items():
             Zt = normalize(embed(enc, TfDS(os.path.join(DEF_BASE, ds), sub_rows, transform, tfn, a.seed),
-                                 bs, precision), axis=1)
+                                 bs, precision, a.device), axis=1)
             if a.save_emb:
                 np.save(os.path.join(edir, f"{ds}_{tname}.npy"), Zt.astype("float16"))
             I = nbr.kneighbors(Zt, return_distance=False)     # neighbors of transformed view in clean set
@@ -139,7 +141,7 @@ def main():
 
     df = pd.DataFrame(rows_out)
     os.makedirs(OUT, exist_ok=True)
-    outp = os.path.join(OUT, f"phase16_invariance_{a.encoder}.csv")
+    outp = os.path.join(OUT, f"invariance_{a.encoder}.csv")
     df.to_csv(outp, index=False)
     print(f"\n[SAVED] {outp}  ({len(df)} rows, {time.time()-t0:.0f}s)")
 

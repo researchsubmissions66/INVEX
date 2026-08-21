@@ -1,15 +1,15 @@
 """
-Phase 15 — The reproducibility story on ALL 16 patch datasets, broken down by encoder family.
+Linear Probe Oracle — The linear_probe_oracle story on ALL 16 patch datasets, broken down by encoder family.
 
 Per dataset (single native resolution): label-free Mutual-kNN CONSENSUS per encoder
 + PATIENT-GROUPED downstream AUC per encoder. Then:
-  * Kendall W of CONSENSUS rankings across the 16 datasets   (label-free reproducibility)
-  * Kendall W of DOWNSTREAM rankings across the 16 datasets  (benchmark reproducibility)
+  * Kendall W of CONSENSUS rankings across the 16 datasets   (label-free linear_probe_oracle)
+  * Kendall W of DOWNSTREAM rankings across the 16 datasets  (benchmark linear_probe_oracle)
   * task-task Spearman (benchmark self-agreement) vs consensus-task Spearman (informativeness)
   * SAME, restricted WITHIN the dominant pathology-SSL family (rebuts "just family conformity")
   * per-family mean consensus (face validity) + leave-one-family-out ranking stability
 
-Outputs: phase15_scores.csv, phase15_reproducibility.csv, plot_phase15_family.png
+Outputs: linear_probe_oracle_scores.csv, linear_probe_oracle.csv, plot_linear_probe_oracle_family.png
 Resumable: appends per-dataset; stores each dataset's 28x28 agreement matrix for LOFO.
 """
 import os, sys, time, glob, itertools
@@ -30,8 +30,8 @@ from config import FEAT, META, OUT, DATASETS, FAMILY, EXCLUDE
 SEED, K, FOLDS, CONS_N, PROBE_N = 42, 10, 5, 10000, 40000
 
 rng = np.random.default_rng(SEED)
-SCORES = os.path.join(OUT, "phase15_scores.csv")
-AMAT = os.path.join(OUT, "phase15_amatrices.npz")
+SCORES = os.path.join(OUT, "linear_probe_oracle_scores.csv")
+AMAT = os.path.join(OUT, "linear_probe_oracle_amatrices.npz")
 
 def encoders_for(ds):
     return [os.path.basename(p)[len("features_"):-3]
@@ -110,7 +110,7 @@ for ds in DATASETS:
     np.savez(AMAT, **amats)
     print(f"  {ds} done in {time.time()-t0:.0f}s", flush=True)
 
-# ---------- reproducibility analysis ----------
+# ---------- linear_probe_oracle analysis ----------
 S = pd.read_csv(SCORES)
 CON = S.pivot(index="encoder", columns="dataset", values="consensus")
 AUC = S.pivot(index="encoder", columns="dataset", values="auc")
@@ -141,7 +141,7 @@ for f in ["path_ssl", "path_vlm", "baseline"]:
     if len(idx) >= 4:
         res.append(block(idx, f"family={f}"))
 rep = pd.DataFrame(res)
-rep.to_csv(os.path.join(OUT, "phase15_reproducibility.csv"), index=False)
+rep.to_csv(os.path.join(OUT, "linear_probe_oracle.csv"), index=False)
 
 # leave-one-family-out: recompute consensus excluding a family's votes, measure rank stability
 lofo = []
@@ -153,7 +153,7 @@ for f in ["path_ssl", "path_vlm", "baseline"]:
         loo = Aj.loc[common, [k for k in keep if k in Aj.columns]].mean(axis=1)
         stab.append(spearmanr(full, loo)[0])
     lofo.append({"left_out_family": f, "mean_rank_stability_rho": float(np.mean(stab))})
-pd.DataFrame(lofo).to_csv(os.path.join(OUT, "phase15_lofo.csv"), index=False)
+pd.DataFrame(lofo).to_csv(os.path.join(OUT, "linear_probe_oracle_lofo.csv"), index=False)
 
 # per-family mean consensus (face validity)
 famcons = S.groupby("family").consensus.agg(["mean", "std", "count"]).round(3)
@@ -183,6 +183,6 @@ labels = list(rr.index); x = np.arange(len(labels)); w = 0.35
 ax[1].bar(x-w/2, rr.consensus_W, w, label="consensus W", color="#2b6cb0")
 ax[1].bar(x+w/2, rr.downstream_W, w, label="downstream W", color="#c53030")
 ax[1].set_xticks(x); ax[1].set_xticklabels([l.split("(")[0].split("=")[-1] for l in labels], rotation=30, fontsize=8)
-ax[1].set_ylabel("Kendall W"); ax[1].set_title("Reproducibility: label-free vs benchmarks"); ax[1].legend(fontsize=8)
-plt.tight_layout(); plt.savefig(os.path.join(OUT, "plot_phase15_family.png"), dpi=140)
-print("\n[SAVED] plot_phase15_family.png + phase15_reproducibility.csv + phase15_lofo.csv")
+ax[1].set_ylabel("Kendall W"); ax[1].set_title("Linear Probe Oracle: label-free vs benchmarks"); ax[1].legend(fontsize=8)
+plt.tight_layout(); plt.savefig(os.path.join(OUT, "plot_linear_probe_oracle_family.png"), dpi=140)
+print("\n[SAVED] plot_linear_probe_oracle_family.png + linear_probe_oracle.csv + linear_probe_oracle_lofo.csv")

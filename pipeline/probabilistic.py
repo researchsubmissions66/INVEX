@@ -1,5 +1,5 @@
 """
-Phase 17 — Probabilistic / Bayesian upgrade of the rotation-invariance metric (CPU).
+Probabilistic — Probabilistic / Bayesian upgrade of the rotation-invariance metric (CPU).
 
 Idea: embeddings live on the unit sphere, so model directions with von Mises-Fisher (vMF).
 Two concentrations capture the two halves of quality:
@@ -16,7 +16,7 @@ and test invariance+expressiveness combinations. Bayesian layer: Dirichlet (Baye
 posteriors over the 16 datasets for per-encoder credible intervals, and bootstrap CIs on the
 downstream Spearman. Head-to-head vs the current retention@10.
 
-Outputs: phase17_prob_scores.csv, phase17_leaderboard.csv, plot_phase17.png
+Outputs: probabilistic_prob_scores.csv, probabilistic_leaderboard.csv, plot_probabilistic.png
 """
 import os, glob, sys
 import numpy as np, pandas as pd, h5py
@@ -51,7 +51,7 @@ def expressiveness(enc, datasets):
     return (np.mean(ers) if ers else np.nan), (np.mean(unis) if unis else np.nan)
 
 # ---------- assemble per-encoder, per-dataset table ----------
-d = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.join(OUT, "phase16_invariance_*.csv"))],
+d = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.join(OUT, "invariance_*.csv"))],
               ignore_index=True)
 _agg = dict(align=("align_dist","mean"), spread=("bio_spread","mean"), retention=("retention@10","mean"))
 HAS_SJS = "soft_js" in d.columns
@@ -64,7 +64,7 @@ rot["Rbio"]  = 1 - rot["spread"]
 rot["logk_nuis"] = np.log(kappa(rot["Rnuis"], rot["d"]))
 rot["logk_bio"]  = np.log(kappa(rot["Rbio"],  rot["d"]))
 rot["Q_vmf"]     = rot["logk_nuis"] - rot["logk_bio"]    # the likelihood-ratio quality
-rot.to_csv(os.path.join(OUT, "phase17_prob_scores.csv"), index=False)
+rot.to_csv(os.path.join(OUT, "probabilistic_prob_scores.csv"), index=False)
 
 datasets = sorted(rot.dataset.unique())
 _pagg = dict(retention=("retention","mean"), inv_kappa=("logk_nuis","mean"),
@@ -87,7 +87,7 @@ if HAS_SJS:
     per["Q_sjs_effrank"] = z(per["soft_js"]) + z(per["exp_effrank"])
 
 # ---------- oracle + validation ----------
-auc = pd.read_csv(os.path.join(OUT, "phase15_scores.csv")).groupby("encoder").auc.mean()
+auc = pd.read_csv(os.path.join(OUT, "linear_probe_oracle_scores.csv")).groupby("encoder").auc.mean()
 J = per.set_index("encoder").join(auc.rename("auc")).dropna(subset=["auc"])
 
 def boot_ci(x, y, B=10000):
@@ -118,7 +118,7 @@ for subset, idx in [("all", J.index),
         rows.append({"subset":subset,"metric":m,"kind":KIND[m],"n":ok.sum(),
                      "rho":rho,"ci_lo":lo,"ci_hi":hi})
 lb = pd.DataFrame(rows)
-lb.to_csv(os.path.join(OUT, "phase17_leaderboard.csv"), index=False)
+lb.to_csv(os.path.join(OUT, "probabilistic_leaderboard.csv"), index=False)
 
 for subset in ["all","vision-only","SSL+other","path_ssl(DINOv2-family)"]:
     s = lb[lb.subset==subset].sort_values("rho", ascending=False)
@@ -137,6 +137,6 @@ bst = [best[best.subset==s].rho.iloc[0] for s in sub]
 ax.bar(x-w/2, ret, w, label="retention@10 (current)", color="#718096")
 ax.bar(x+w/2, bst, w, label="best probabilistic combo", color="#2b6cb0")
 ax.set_xticks(x); ax.set_xticklabels(sub); ax.set_ylabel("Spearman rho vs downstream")
-ax.axhline(0, color="k", lw=.5); ax.legend(); ax.set_title("Phase 17: does invariance x expressiveness beat invariance alone?")
-plt.tight_layout(); plt.savefig(os.path.join(OUT,"plot_phase17.png"), dpi=140)
-print("\n[SAVED] phase17_leaderboard.csv + plot_phase17.png")
+ax.axhline(0, color="k", lw=.5); ax.legend(); ax.set_title("Probabilistic: does invariance x expressiveness beat invariance alone?")
+plt.tight_layout(); plt.savefig(os.path.join(OUT,"plot_probabilistic.png"), dpi=140)
+print("\n[SAVED] probabilistic_leaderboard.csv + plot_probabilistic.png")

@@ -1,5 +1,5 @@
 """
-Phase 18 — KNN probing as a second downstream oracle (CPU).
+KNN — KNN probing as a second downstream oracle (CPU).
 
 A non-parametric alternative to the linear probe: classify each patch by majority vote of its
 k nearest neighbours (cosine) among the training patches, scored by macro AUC under the SAME
@@ -7,8 +7,8 @@ patient-grouped cross-validation. Gives a per-encoder downstream number that doe
 linear classifier, so we can test whether our label-free metric predicts quality regardless of how
 quality is measured.
 
-Outputs: phase18_knn_scores.csv (dataset, encoder, knn_auc, cv), and a quick comparison of the KNN
-oracle vs the linear-probe oracle (Phase 15) and vs rotation-invariance (Phase 16).
+Outputs: knn_probe_oracle_scores.csv (dataset, encoder, knn_auc, cv), and a quick comparison of the KNN
+oracle vs the linear-probe oracle (Linear Probe Oracle) and vs rotation-invariance (Invariance).
 """
 import os, sys, glob, time
 import numpy as np, pandas as pd, h5py
@@ -77,15 +77,15 @@ for ds in DATASETS:
         rows.append({"dataset": ds, "encoder": e, "knn_auc": auc, "cv": mode})
         print(f"  {e:15s} knn_auc={auc:.4f} [{mode}]", flush=True)
 
-kdf = pd.DataFrame(rows); kdf.to_csv(os.path.join(OUT, "phase18_knn_scores.csv"), index=False)
+kdf = pd.DataFrame(rows); kdf.to_csv(os.path.join(OUT, "knn_probe_oracle_scores.csv"), index=False)
 knn = kdf.groupby("encoder").knn_auc.mean()
-print(f"\n[SAVED] phase18_knn_scores.csv  ({time.time()-t0:.0f}s)")
+print(f"\n[SAVED] knn_probe_oracle_scores.csv  ({time.time()-t0:.0f}s)")
 
 # ---- compare KNN oracle to linear-probe oracle + rotation metric ----
-lin = pd.read_csv(os.path.join(OUT, "phase15_scores.csv")).groupby("encoder").auc.mean()
-d = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.join(OUT, "phase16_invariance_*.csv"))], ignore_index=True)
+lin = pd.read_csv(os.path.join(OUT, "linear_probe_oracle_scores.csv")).groupby("encoder").auc.mean()
+d = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.join(OUT, "invariance_*.csv"))], ignore_index=True)
 ret = d[d["transform"].isin(["rot90","rot180","rot270"])].groupby("encoder")["retention@10"].mean()
-J = pd.DataFrame({"knn": knn, "lin": lin, "ret": ret}).dropna()
+J = pd.DataFrame({"knn_probe_oracle": knn, "lin": lin, "ret": ret}).dropna()
 print(f"\n=== KNN oracle vs linear-probe oracle (n={len(J)} encoders) ===")
 print(f"  agreement of the two oracles     Spearman={spearmanr(J.knn, J.lin)[0]:+.3f}")
 print(f"  rotation-invariance ~ KNN oracle Spearman={spearmanr(J.ret, J.knn)[0]:+.3f}")

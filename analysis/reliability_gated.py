@@ -22,12 +22,12 @@ ROT = ["rot90", "rot180", "rot270"]
 
 def run():
     T = vision_only(load_metrics())                       # per-encoder combined + retention (fixed)
-    sc = pd.read_csv(os.path.join(OUT, "phase15_scores.csv"))
+    sc = pd.read_csv(os.path.join(OUT, "linear_probe_oracle_scores.csv"))
     auc = sc[~sc.encoder.isin(VLM)][["dataset", "encoder", "auc"]]
     spread = auc.groupby("dataset").auc.agg(lambda s: s.max() - s.min()).sort_values(ascending=False)
 
     # per-dataset within-dataset invariance->AUC rho (for the scatter)
-    d16 = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.join(OUT, "phase16_invariance_*.csv"))
+    d16 = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.join(OUT, "invariance_*.csv"))
                      if "summary" not in f], ignore_index=True)
     ret = d16[d16["transform"].isin(ROT)].groupby(["dataset", "encoder"])["retention@10"].mean().reset_index()
     m = ret.merge(auc, on=["dataset", "encoder"])

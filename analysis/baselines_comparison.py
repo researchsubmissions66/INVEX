@@ -19,7 +19,7 @@ from config import OUT, VLM
 def run():
     T = vision_only(load_metrics()); auc = T.auc
     I = pd.read_csv(os.path.join(OUT, "intrinsic_per_dataset.csv")).groupby("encoder").mean(numeric_only=True)
-    cons = pd.read_csv(os.path.join(OUT, "phase15_scores.csv"))
+    cons = pd.read_csv(os.path.join(OUT, "linear_probe_oracle_scores.csv"))
     cons = cons[~cons.encoder.isin(VLM)].groupby("encoder").consensus.mean()
 
     # score name -> (per-encoder series, group)

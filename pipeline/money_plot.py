@@ -1,5 +1,5 @@
 """
-Phase 11 — The Money Plot: does label-free Mutual-kNN Consensus predict
+Money Plot — The Money Plot: does label-free Mutual-kNN Consensus predict
 downstream quality?
 
 For each hard dataset {MHIST, CHAOYANG, Kather-MSI-CRC, Kather-MSI-STAD, TCGA-TILs}:
@@ -16,10 +16,10 @@ Then correlate CONSENSUS vs DOWNSTREAM across encoders:
   * bonus (Claim B): cross-dataset consensus-ranking stability (Kendall's W)
 
 Outputs (results/):
-  phase11_per_dataset.csv        (dataset, encoder, consensus, auc, n_used, cv_mode)
-  phase11_encoder_summary.csv    (encoder, mean_consensus, mean_auc, per-dataset ...)
-  phase11_correlations.csv       (per-dataset + aggregate rho, p, CI, Kendall W)
-  plot_phase11_money.png
+  money_plot_per_dataset.csv        (dataset, encoder, consensus, auc, n_used, cv_mode)
+  money_plot_encoder_summary.csv    (encoder, mean_consensus, mean_auc, per-dataset ...)
+  money_plot_correlations.csv       (per-dataset + aggregate rho, p, CI, Kendall W)
+  plot_money_plot_money.png
 """
 import os, sys, time, argparse, glob, itertools
 import numpy as np, pandas as pd, h5py
@@ -168,7 +168,7 @@ for ds in args.datasets:
         print(f"    {e:15s} consensus={cons[e]:.4f}  AUC={auc:.4f}  [{mode}]", flush=True)
 
 per = pd.DataFrame(per_rows)
-per.to_csv(os.path.join(OUT, "phase11_per_dataset.csv"), index=False)
+per.to_csv(os.path.join(OUT, "money_plot_per_dataset.csv"), index=False)
 
 # ---- aggregate per encoder ----
 summ = per.pivot_table(index="encoder", values=["consensus", "auc"], aggfunc="mean")
@@ -176,7 +176,7 @@ summ.columns = ["mean_auc", "mean_consensus"]
 cons_wide = per.pivot(index="encoder", columns="dataset", values="consensus").add_prefix("cons_")
 auc_wide  = per.pivot(index="encoder", columns="dataset", values="auc").add_prefix("auc_")
 summ = summ.join(cons_wide).join(auc_wide).reset_index()
-summ.to_csv(os.path.join(OUT, "phase11_encoder_summary.csv"), index=False)
+summ.to_csv(os.path.join(OUT, "money_plot_encoder_summary.csv"), index=False)
 
 # ---- correlations ----
 corr_rows = []
@@ -204,7 +204,7 @@ m, n_ = rank_mat.shape[1], rank_mat.shape[0]
 Rj = rank_mat.sum(axis=1); S = ((Rj - Rj.mean())**2).sum()
 kendall_w = 12 * S / (m**2 * (n_**3 - n_))
 corr_rows.append({"scope": "Kendall_W_consensus_stability", "n": n_, "rho": kendall_w, "p": np.nan})
-pd.DataFrame(corr_rows).to_csv(os.path.join(OUT, "phase11_correlations.csv"), index=False)
+pd.DataFrame(corr_rows).to_csv(os.path.join(OUT, "money_plot_correlations.csv"), index=False)
 
 print("\n" + "="*60)
 print("PER-DATASET Spearman(consensus, AUC):")
@@ -228,8 +228,8 @@ if len(xs) > 2:
                                        "--", color="gray", alpha=0.7, zorder=2)
 ax.set_xlabel("Label-free Mutual-kNN Consensus  (mean across hard datasets)")
 ax.set_ylabel("Downstream macro-AUC  (patient-grouped CV, mean)")
-ax.set_title(f"Phase 11 — Money Plot\nSpearman ρ = {rho:+.3f}  (95% CI [{lo:+.2f}, {hi:+.2f}], p={p:.3f}, n={len(agg)})",
+ax.set_title(f"Money Plot — Money Plot\nSpearman ρ = {rho:+.3f}  (95% CI [{lo:+.2f}, {hi:+.2f}], p={p:.3f}, n={len(agg)})",
              fontweight="bold")
 ax.grid(alpha=0.25)
-plt.tight_layout(); plt.savefig(os.path.join(OUT, "plot_phase11_money.png"), dpi=150)
-print(f"\n[SAVED] plot_phase11_money.png  |  done in {time.time()-t0:.0f}s")
+plt.tight_layout(); plt.savefig(os.path.join(OUT, "plot_money_plot_money.png"), dpi=150)
+print(f"\n[SAVED] plot_money_plot_money.png  |  done in {time.time()-t0:.0f}s")

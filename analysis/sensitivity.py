@@ -4,7 +4,7 @@ Parameter sensitivity of the headline (combined ~ downstream, vision-only, Spear
 Instant sweeps (from banked per-encoder scores; no re-embedding):
   A. combination weight   Q(alpha) = alpha*z(retention) + (1-alpha)*z(effrank), alpha in [0,1]
   B. invariance operationalization: retention@10 vs recall@1/@10 vs soft_js vs ratio (alone + combined)
-The k / N / SUB sweeps that need the banked embeddings live in analysis/sensitivity_knn.py.
+The k / N / SUB sweeps that need the banked embeddings live in analysis/sensitivity_knn_probe_oracle.py.
 Outputs: figures/sensitivity.png, results/sensitivity_alpha.csv
 """
 import os, glob
@@ -29,7 +29,7 @@ def run():
     best_a = alphas[int(np.argmax(rho_a))]
 
     # --- B. invariance operationalization (mean over rot & datasets), alone + combined with effrank ---
-    d16 = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.join(OUT, "phase16_invariance_*.csv"))
+    d16 = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.join(OUT, "invariance_*.csv"))
                      if "summary" not in f], ignore_index=True)
     d16 = d16[~d16.encoder.isin(VLM)]
     ops = {}

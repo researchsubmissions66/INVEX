@@ -1,6 +1,6 @@
 """
 Ablation table: every metric variant x subset, with rho and 95% bootstrap CI, from the existing
-phase17_leaderboard.csv. Shows the combined score is earned, not fished, and that the null controls
+probabilistic_leaderboard.csv. Shows the combined score is earned, not fished, and that the null controls
 are null. Emits a markdown table (docs/ablation_table.md) and a tidy CSV (results/ablation_table.csv).
 """
 import os
@@ -19,7 +19,7 @@ NICE = {"retention": "rotation invariance (retention@10)", "soft_js": "soft-JS i
 
 
 def run():
-    lb = pd.read_csv(os.path.join(OUT, "phase17_leaderboard.csv"))
+    lb = pd.read_csv(os.path.join(OUT, "probabilistic_leaderboard.csv"))
     subs = ["all", "vision-only", "SSL+other", "path_ssl(DINOv2-family)"]
     subs = [s for s in subs if s in set(lb.subset)]
     cell = lambda r: f"{r.rho:+.2f} [{r.ci_lo:+.2f},{r.ci_hi:+.2f}]"

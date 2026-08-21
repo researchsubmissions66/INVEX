@@ -1,7 +1,7 @@
 """
 Ablation #13: does the invariance signal need all three dihedral rotations, or is one enough?
 Per-angle retention@10 (rot90 / rot180 / rot270 individually, pairs, all-three), each alone and
-combined with effrank, correlated with the downstream oracle (vision-only). Instant (phase16 CSVs).
+combined with effrank, correlated with the downstream oracle (vision-only). Instant (invariance CSVs).
 Output: printed table + results/sensitivity_angles.csv
 """
 import os, glob, itertools
@@ -13,7 +13,7 @@ from config import OUT, VLM
 
 def run():
     T = vision_only(load_metrics()); eff = T.effrank; auc = T.auc
-    d16 = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.join(OUT, "phase16_invariance_*.csv"))
+    d16 = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.join(OUT, "invariance_*.csv"))
                      if "summary" not in f], ignore_index=True)
     d16 = d16[~d16.encoder.isin(VLM)]
 

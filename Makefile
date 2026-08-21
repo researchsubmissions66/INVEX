@@ -1,7 +1,7 @@
 PY ?= python
 
 # Reproduce the paper's figures & tables from the banked results/ artifacts (CPU only).
-# The heavy GPU stage (rotated re-embedding, phase16) is assumed already run; see README.
+# The heavy GPU stage (rotated re-embedding, invariance) is assumed already run; see README.
 
 .PHONY: all metrics figures tables sensitivity test clean
 
@@ -26,7 +26,7 @@ sensitivity: metrics ## parameter sweeps: α-weight, operationalization, angles,
 	$(PY) analysis/sensitivity.py           # α-weight + operationalization (instant)
 	$(PY) analysis/sensitivity_angles.py    # individual rotation angles (instant)
 	$(PY) analysis/sensitivity_metrics.py   # discriminability-measure + data-efficiency (~10 min)
-	$(PY) analysis/sensitivity_knn.py       # k / N / seed on banked embeddings (~15 min)
+	$(PY) analysis/sensitivity_knn_probe_oracle.py       # k / N / seed on banked embeddings (~15 min)
 
 test:               ## unit tests for the metric primitives
 	$(PY) tests/test_metrics.py
