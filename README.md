@@ -17,7 +17,6 @@
 
 - **Label-Free Ranking**: Predicts downstream oracle performance without needing any labels or fine-tuning.
 - **Massive Scale**: Evaluated across **22 pathology foundation models** and **16 public patch-level benchmarks** covering 8+ organs and >1.2M patches.
-- **Probabilistic Scoring**: Uses von Mises–Fisher (vMF) concentration parameters to model invariance and expressiveness on the unit hypersphere, with Bayesian-bootstrap credible intervals.
 
 ---
 
