@@ -94,25 +94,25 @@ INVEX evaluates **22 pathology foundation models**:
 | Dataset | Source / Institution | Description | Link |
 | :--- | :--- | :--- | :--- |
 | **Tumor Detection** | | | |
-| LC25000 | University of South Florida / TampaPath | Created from a small collection of pathology images that were extensively augmented to produce 25,000 images across five tissue classes. | [Link](https://github.com/tampapath/lc25000) |
-| BreakHis | Federal University of Paraná (UFPR), Brazil | Histopathology microscopy dataset collected from 82 patients at four magnifications (40×, 100×, 200×, and 400×), with expert-confirmed benign and malignant diagnoses. | [Link](https://web.inf.ufpr.br/vri/databases/breakhis/) |
+| LC25000 | University of South Florida / TampaPath | Created from a small collection of pathology images that were extensively augmented to produce 25,000 images across five tissue classes. | [Link](https://github.com/tampapath/lung_colon_image_set) |
+| BreakHis | Federal University of Paraná (UFPR), Brazil | Histopathology microscopy dataset collected from 82 patients at four magnifications (40×, 100×, 200×, and 400×), with expert-confirmed benign and malignant diagnoses. | [Link](https://web.inf.ufpr.br/vri/databases/breast-cancer-histopathological-database-breakhis/) |
 | PCAM (PatchCamelyon) | Derived from the CAMELYON16 Grand Challenge (Radboud UMC and UMC Utrecht) | 96×96 image patches extracted from whole-slide images with binary labels indicating metastatic tissue. | [Link](https://github.com/basveeling/pcam) |
 | DigestPath | DigestPath Grand Challenge (2019) | Public benchmark consisting of pathology images collected for gastrointestinal pathology tasks, including benign and malignant lesion classification. | [Link](https://digestpath2019.grand-challenge.org/) |
 | **Molecular Status Prediction** | | | |
 | Kather-MSI-STAD | University Hospital Heidelberg | Clinical cohort assembled from TCGA and additional institutional data for predicting microsatellite instability directly from H&E slides. | [Link](https://doi.org/10.5281/zenodo.2530835) |
-| Kather-MSI-CRC | University Hospital Heidelberg | Clinical and TCGA-derived colorectal cancer cohort developed for microsatellite instability prediction from histopathology. | [Link](https://doi.org/10.5281/zenodo.1214456) |
+| Kather-MSI-CRC | University Hospital Heidelberg | Clinical and TCGA-derived colorectal cancer cohort developed for microsatellite instability prediction from histopathology. | [Link](https://zenodo.org/records/2530835) |
 | **Immune / TIL Assessment** | | | |
-| CCRCC-Lymphocyte | TCGA-KIRC derived research dataset | Image patches extracted from TCGA whole-slide images and annotated for lymphocyte infiltration assessment. | [Link](https://portal.gdc.cancer.gov/projects/TCGA-KIRC) |
-| TCGA-TILs | The Cancer Genome Atlas (TCGA) | Pan-cancer whole-slide image collection with tumor-infiltrating lymphocyte (TIL) annotations for immune profiling studies. | [Link](https://gdc.cancer.gov/) |
+| CCRCC-Lymphocyte | TCGA-KIRC derived research dataset | Image patches extracted from TCGA whole-slide images and annotated for lymphocyte infiltration assessment. | [Link](https://zenodo.org/records/7898308) |
+| TCGA-TILs | The Cancer Genome Atlas (TCGA) | Pan-cancer whole-slide image collection with tumor-infiltrating lymphocyte (TIL) annotations for immune profiling studies. | [Link](https://doi.org/10.5281/zenodo.6604094) |
 | **Tissue Typing** | | | |
-| WSSS4LUAD | WSSS4LUAD Grand Challenge; Guangdong Provincial People's Hospital (GDPH) and TCGA | Weakly supervised tissue segmentation benchmark. Training uses patch-level labels, while validation and test pixel-level annotations were generated through a pathologist-in-the-loop annotation pipeline. | [Link](https://github.com/DEEPBIO/WSSS4LUAD) |
-| CHAOYANG | Beijing Chaoyang Hospital | Clinical pathology image dataset manually annotated by expert pathologists for tissue classification. | [Link](https://bupt-ai-cz.github.io/BCaM/) |
+| WSSS4LUAD | WSSS4LUAD Grand Challenge; Guangdong Provincial People's Hospital (GDPH) and TCGA | Weakly supervised tissue segmentation benchmark. Training uses patch-level labels, while validation and test pixel-level annotations were generated through a pathologist-in-the-loop annotation pipeline. | [Link](https://wsss4luad.grand-challenge.org/) |
+| CHAOYANG | Beijing Chaoyang Hospital | Clinical pathology image dataset manually annotated by expert pathologists for tissue classification. | [Link](https://bupt-ai-cz.github.io/HSA-NRL/) |
 | NCT-CRC-HE-100K | National Center for Tumor Diseases (NCT) Biobank and University Medical Center Mannheim | 100,000 manually annotated tissue patches extracted from 86 whole-slide images and categorized into nine tissue classes. | [Link](https://zenodo.org/records/1214456) |
 | NCT-CRC-VAL-HE-7K | National Center for Tumor Diseases (NCT), Heidelberg | Independent validation cohort created using the same extraction and annotation protocol as NCT-CRC-HE-100K. | [Link](https://zenodo.org/records/1214456) |
-| CCRCC-Tissue | TCGA-KIRC derived research dataset | Whole-slide image patches extracted from TCGA and manually assigned tissue-type labels including tumor, stroma, and necrosis. | [Link](https://portal.gdc.cancer.gov/projects/TCGA-KIRC) |
+| CCRCC-Tissue | TCGA-KIRC derived research dataset | Whole-slide image patches extracted from TCGA and manually assigned tissue-type labels including tumor, stroma, and necrosis. | [Link](https://zenodo.org/records/7898308) |
 | **Tumor Subtyping / Grading** | | | |
 | MHIST | Dartmouth-Hitchcock Medical Center | Curated clinical dataset with expert-consensus annotations distinguishing hyperplastic polyps from sessile serrated adenomas. | [Link](https://bmirds.github.io/MHIST/) |
-| SICAPv2 | Hospital de Braga and University of Minho, Portugal | Expert-annotated prostate biopsy whole-slide images with Gleason grading for automated pathology analysis. | [Link](https://github.com/josegcpa/SICAPv2) |
+| SICAPv2 | Hospital de Braga and University of Minho, Portugal | Expert-annotated prostate biopsy whole-slide images with Gleason grading for automated pathology analysis. | [Link](https://data.mendeley.com/datasets/9xxm58dvs3/2) |
 
 ### Dataset Classes
 
