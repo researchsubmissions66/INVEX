@@ -2,7 +2,7 @@
   <img src="figures/logo.png" width="500" alt="INVEX Logo">
 </div>
 
-# INVEX: INVariance × EXpressiveness for Label-Free Ranking of Pathology Foundation Models
+# INVEX: Label-Free Pathology Foundation Model Ranking via Invariance and Expressiveness
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -16,8 +16,8 @@
 ## 🚀 Key Features
 
 - **Label-Free Ranking**: Predicts downstream oracle performance without needing any labels or fine-tuning.
-- **High Reproducibility**: Label-free ranking (Kendall W = 0.92) is significantly more reproducible than labeled benchmarks (W = 0.51).
-- **Massive Scale**: Evaluated across **28 pathology foundation models** spanning 4 paradigms and **16 public patch-level benchmarks** covering 8+ organs and >1.2M patches.
+- **High Linear Probe Oracle**: Label-free ranking (Kendall W = 0.92) is significantly more reproducible than labeled benchmarks (W = 0.51).
+- **Massive Scale**: Evaluated across **22 pathology foundation models** spanning 4 paradigms and **16 public patch-level benchmarks** covering 8+ organs and >1.2M patches.
 - **Probabilistic Scoring**: Uses von Mises–Fisher (vMF) concentration parameters to model invariance and expressiveness on the unit hypersphere, with Bayesian-bootstrap credible intervals.
 
 ---
@@ -56,46 +56,39 @@ INVEX/
 
 ---
 
-## 🔬 Encoders (28 Models)
+## 🔬 Encoders (22 Models)
 
-INVEX evaluates **28 pathology foundation models** across 4 paradigms:
+INVEX evaluates **22 pathology foundation models** across 4 paradigms:
 
 ### Pathology SSL (Self-Supervised Learning)
 | Encoder | Backbone | Training | Dim |
 | :--- | :--- | :--- | :---: |
-| `uni_v1` | ViT-L/16 | DINOv2 | 1024 |
-| `uni_v2` | ViT-H/14 | DINOv2 | 1536 |
-| `virchow` | ViT-H/14 | DINOv2 | 2560 |
-| `virchow2` | ViT-H/14 | DINOv2 | 2560 |
-| `gigapath` | ViT-g/14 | DINOv2 | 1536 |
-| `hoptimus0` | ViT-g/14 | DINOv2-style | 1536 |
-| `hoptimus1` | ViT-g/14 | DINOv2-style | 1536 |
-| `phikon` | ViT-B/16 | iBOT | 768 |
-| `phikon_v2` | ViT-L/16 | DINOv2 | 1024 |
-| `hibou_l` | ViT-L/14 | DINOv2 | 1024 |
-| `gpfm` | ViT-L | Multi-teacher distillation | 1024 |
-| `h0-mini` | ViT-B/14 | Distillation | 768 |
-| `midnight12k` | ViT-L/14 | DINOv2 (Midnight) | 1536 |
-| `openmidnight` | ViT-L/14 | DINOv2 (open Midnight) | 1536 |
-| `kaiko-vitb8` | ViT-B/8 | DINO | 768 |
-| `kaiko-vitb16` | ViT-B/16 | DINO | 768 |
-| `kaiko-vits8` | ViT-S/8 | DINO | 384 |
-| `kaiko-vits16` | ViT-S/16 | DINO | 384 |
-| `kaiko-vitl14` | ViT-L/14 | DINOv2 | 1024 |
-| `lunit-vits8` | ViT-S/8 | DINO | 384 |
-| `genbio-pathfm` | ViT (large) | SSL | 4608 |
-
-### Pathology VLM (Vision-Language Models)
-| Encoder | Backbone | Training | Dim |
-| :--- | :--- | :--- | :---: |
-| `conch_v1` | ViT-B/16 | Vision-language | 512 |
-| `conch_v15` | ViT | Vision-language | 768 |
-| `musk` | ViT-L | Vision-language | 1024 |
+| `UNI-v1` | ViT-L/16 | DINOv2 | 1024 |
+| `UNI-v2` | ViT-H/14 | DINOv2 | 1536 |
+| `Virchow` | ViT-H/14 | DINOv2 | 2560 |
+| `Virchow2` | ViT-H/14 | DINOv2 | 2560 |
+| `GigaPath` | ViT-g/14 | DINOv2 | 1536 |
+| `H-Optimus-0` | ViT-g/14 | DINOv2-style | 1536 |
+| `H-Optimus-1` | ViT-g/14 | DINOv2-style | 1536 |
+| `Phikon` | ViT-B/16 | iBOT | 768 |
+| `Phikon-v2` | ViT-L/16 | DINOv2 | 1024 |
+| `Hibou-L` | ViT-L/14 | DINOv2 | 1024 |
+| `GPFM` | ViT-L | Multi-teacher distillation | 1024 |
+| `H0-mini` | ViT-B/14 | Distillation | 768 |
+| `Midnight-12k` | ViT-L/14 | DINOv2 (Midnight) | 1536 |
+| `OpenMidnight` | ViT-L/14 | DINOv2 (open Midnight) | 1536 |
+| `Kaiko-ViT-B/8` | ViT-B/8 | DINO | 768 |
+| `Kaiko-ViT-B/16` | ViT-B/16 | DINO | 768 |
+| `Kaiko-ViT-S/8` | ViT-S/8 | DINO | 384 |
+| `Kaiko-ViT-S/16` | ViT-S/16 | DINO | 384 |
+| `Kaiko-ViT-L/14` | ViT-L/14 | DINOv2 | 1024 |
+| `Lunit-ViT-S/8` | ViT-S/8 | DINO | 384 |
+| `GenBio-PathFM` | ViT (large) | SSL | 4608 |
 
 ### Pathology Other
 | Encoder | Backbone | Training | Dim |
 | :--- | :--- | :--- | :---: |
-| `ctranspath` | CNN+Swin-T | SRCL contrastive | 768 |
+| `CTransPath` | CNN+Swin-T | SRCL contrastive | 768 |
 
 ### Baselines
 | Encoder | Backbone | Training | Dim |
@@ -108,28 +101,58 @@ INVEX evaluates **28 pathology foundation models** across 4 paradigms:
 
 ## 🧬 Patch-Level Datasets (16 Benchmarks)
 
-| Dataset | Organ | Task | Classes | Patches | Magnification |
-| :--- | :--- | :--- | :---: | ---: | :---: |
-| [MHIST](https://bmirds.github.io/MHIST/) | Colorectal | Polyp type (HP vs SSA) | 2 | 3,152 | 20× |
-| [CHAOYANG](https://bupt-ai-cz.github.io/HSA-NRL/) | Colon | Tissue type | 4 | 6,160 | 20× |
-| [WSSS4LUAD](https://wsss4luad.grand-challenge.org/) | Lung adeno. | Tissue type | 3 | 4,693 | 40× |
-| [NCT-CRC-VAL-HE-7K](https://zenodo.org/records/1214456) | Colorectal | Tissue type (9-class, val) | 9 | 7,180 | 20× |
-| [BreaKHis](https://web.inf.ufpr.br/vri/databases/breast-cancer-histopathological-database-breakhis/) | Breast | Tumor benign/malignant | 2 | 7,909 | Multi |
-| [LC25000_COLON](https://github.com/tampapath/lung_colon_image_set) | Colon | Tumor benign/adeno. | 2 | 10,000 | 20× |
-| [SICAPv2](https://data.mendeley.com/datasets/9xxm58dvs3/2) | Prostate | Gleason grading | 4 | 12,081 | 10× |
-| [LC25000_LUNG](https://github.com/tampapath/lung_colon_image_set) | Lung | Tumor subtype (3-class) | 3 | 15,000 | 20× |
-| [CCRCC_Lymphocyte](https://zenodo.org/records/7898308) | Kidney (ccRCC) | Immune vs tumor | 2 | 25,095 | 20× |
-| [CCRCC_Tissue](https://zenodo.org/records/7898308) | Kidney (ccRCC) | Tissue type (6-class) | 6 | 52,713 | 20× |
-| [digestPath](https://digestpath2019.grand-challenge.org/) | Colon/GI | Lesion cancerous/non | 2 | 70,379 | 20× |
-| [NCT-CRC](https://zenodo.org/records/1214456) | Colorectal | Tissue type (9-class, train) | 9 | 107,180 | 20× |
-| [Kather-MSI-CRC](https://zenodo.org/records/2530835) | Colorectal | Molecular MSI/MSS | 2 | 192,312 | 20× |
-| [Kather-MSI-STAD](https://zenodo.org/records/2530835) | Stomach | Molecular MSI/MSS | 2 | 218,578 | 20× |
-| [TCGA-TILs](https://doi.org/10.5281/zenodo.6604094) | Pan-cancer | TIL detection | 2 | 227,699 | 20× |
-| [PCam](https://github.com/basveeling/pcam) | Lymph node | Metastasis normal/tumor | 2 | 327,680 | 10× |
 
----
+### Dataset Summary
 
-## 🛠️ Usage
+| Dataset | Source / Institution | Description | Link |
+| :--- | :--- | :--- | :--- |
+| **Tumor Detection** | | | |
+| LC25000 | University of South Florida / TampaPath | Created from a small collection of pathology images that were extensively augmented to produce 25,000 images across five tissue classes. | [Link](https://github.com/tampapath/lc25000) |
+| BreakHis | Federal University of Paraná (UFPR), Brazil | Histopathology microscopy dataset collected from 82 patients at four magnifications (40×, 100×, 200×, and 400×), with expert-confirmed benign and malignant diagnoses. | [Link](https://web.inf.ufpr.br/vri/databases/breakhis/) |
+| PCAM (PatchCamelyon) | Derived from the CAMELYON16 Grand Challenge (Radboud UMC and UMC Utrecht) | 96×96 image patches extracted from whole-slide images with binary labels indicating metastatic tissue. | [Link](https://github.com/basveeling/pcam) |
+| DigestPath | DigestPath Grand Challenge (2019) | Public benchmark consisting of pathology images collected for gastrointestinal pathology tasks, including benign and malignant lesion classification. | [Link](https://digestpath2019.grand-challenge.org/) |
+| **Molecular Status Prediction** | | | |
+| Kather-MSI-STAD | University Hospital Heidelberg | Clinical cohort assembled from TCGA and additional institutional data for predicting microsatellite instability directly from H&E slides. | [Link](https://doi.org/10.5281/zenodo.2530835) |
+| Kather-MSI-CRC | University Hospital Heidelberg | Clinical and TCGA-derived colorectal cancer cohort developed for microsatellite instability prediction from histopathology. | [Link](https://doi.org/10.5281/zenodo.1214456) |
+| **Immune / TIL Assessment** | | | |
+| CCRCC-Lymphocyte | TCGA-KIRC derived research dataset | Image patches extracted from TCGA whole-slide images and annotated for lymphocyte infiltration assessment. | [Link](https://portal.gdc.cancer.gov/projects/TCGA-KIRC) |
+| TCGA-TILs | The Cancer Genome Atlas (TCGA) | Pan-cancer whole-slide image collection with tumor-infiltrating lymphocyte (TIL) annotations for immune profiling studies. | [Link](https://gdc.cancer.gov/) |
+| **Tissue Typing** | | | |
+| WSSS4LUAD | WSSS4LUAD Grand Challenge; Guangdong Provincial People's Hospital (GDPH) and TCGA | Weakly supervised tissue segmentation benchmark. Training uses patch-level labels, while validation and test pixel-level annotations were generated through a pathologist-in-the-loop annotation pipeline. | [Link](https://github.com/DEEPBIO/WSSS4LUAD) |
+| CHAOYANG | Beijing Chaoyang Hospital | Clinical pathology image dataset manually annotated by expert pathologists for tissue classification. | [Link](https://bupt-ai-cz.github.io/BCaM/) |
+| NCT-CRC-HE-100K | National Center for Tumor Diseases (NCT) Biobank and University Medical Center Mannheim | 100,000 manually annotated tissue patches extracted from 86 whole-slide images and categorized into nine tissue classes. | [Link](https://zenodo.org/records/1214456) |
+| NCT-CRC-VAL-HE-7K | National Center for Tumor Diseases (NCT), Heidelberg | Independent validation cohort created using the same extraction and annotation protocol as NCT-CRC-HE-100K. | [Link](https://zenodo.org/records/1214456) |
+| CCRCC-Tissue | TCGA-KIRC derived research dataset | Whole-slide image patches extracted from TCGA and manually assigned tissue-type labels including tumor, stroma, and necrosis. | [Link](https://portal.gdc.cancer.gov/projects/TCGA-KIRC) |
+| **Tumor Subtyping / Grading** | | | |
+| MHIST | Dartmouth-Hitchcock Medical Center | Curated clinical dataset with expert-consensus annotations distinguishing hyperplastic polyps from sessile serrated adenomas. | [Link](https://bmirds.github.io/MHIST/) |
+| SICAPv2 | Hospital de Braga and University of Minho, Portugal | Expert-annotated prostate biopsy whole-slide images with Gleason grading for automated pathology analysis. | [Link](https://github.com/josegcpa/SICAPv2) |
+
+### Dataset Classes
+
+| Dataset | Class Labels | Description |
+| :--- | :--- | :--- |
+| **Tumor Detection** | | |
+| LC25000-LUNG | Adenocarcinoma (ACA), Benign Lung (N), Squamous Cell Carcinoma (SCC) | **Task:** Lung tissue classification<br>**N:** Benign lung parenchyma<br>**ACA:** Glandular epithelial carcinoma<br>**SCC:** Squamous epithelial carcinoma. |
+| LC25000-COLON | Adenocarcinoma (ACA), Benign Colon (N) | **Task:** Benign vs. malignant colon tissue<br>**N:** Normal colonic mucosa<br>**ACA:** Invasive colorectal adenocarcinoma. |
+| BreakHis | Benign, Malignant | **Task:** Breast tumor classification<br>**Benign:** Non-invasive breast lesions<br>**Malignant:** Invasive breast carcinomas. |
+| PCAM | Normal, Tumor | **Task:** Lymph node metastasis detection<br>**Normal:** Healthy lymphoid tissue<br>**Tumor:** Metastatic breast carcinoma. |
+| DigestPath | Non-cancerous, Cancerous | **Task:** Digestive-system cancer detection<br>**Non-cancerous:** Benign tissue<br>**Cancerous:** Malignant epithelial tissue. |
+| **Molecular Status Prediction** | | |
+| Kather-MSI-STAD | MSS, MSI | **Task:** MSI prediction in gastric cancer<br>**MSI:** Deficient DNA mismatch repair (dMMR)<br>**MSS:** Intact mismatch repair. |
+| Kather-MSI-CRC | MSS, MSI | **Task:** MSI prediction in colorectal cancer<br>**MSI:** Associated with immunotherapy response<br>**MSS:** Microsatellite stable tumors. |
+| **Immune / TIL Assessment** | | |
+| CCRCC-Lymphocyte | Blood, Lymphocyte, Tumor | **Task:** Immune composition analysis<br>**Blood:** Blood-rich regions<br>**Lymphocyte:** Immune-cell infiltrates<br>**Tumor:** Clear cell renal carcinoma. |
+| TCGA-TILs | Negative, Positive | **Task:** Tumor-infiltrating lymphocyte (TIL) detection<br>**Positive:** Detectable immune infiltration<br>**Negative:** Minimal or absent TILs. |
+| **Tissue Typing** | | |
+| WSSS4LUAD | Normal, Stroma, Tumor | **Task:** Lung tissue segmentation<br>**Normal:** Pulmonary parenchyma<br>**Stroma:** Connective tissue<br>**Tumor:** Malignant epithelium. |
+| CHAOYANG | Adenocarcinoma, Adenoma, Serrated, Normal | **Task:** Colorectal tissue classification<br>**Adenoma/Serrated:** Premalignant lesions<br>**Adenocarcinoma:** Malignant tissue<br>**Normal:** Healthy mucosa. |
+| NCT-CRC-HE-100K | ADI, BACK, DEB, LYM, MUC, MUS, NORM, STR, TUM | **Task:** Nine-class colorectal tissue recognition<br>**Classes:** Adipose, background, debris, lymphocytes, mucus, muscle, normal mucosa, stroma, and tumor epithelium. |
+| NCT-CRC-VAL-HE-7K | ADI, BACK, DEB, LYM, MUC, MUS, NORM, STR, TUM | **Task:** Independent validation cohort<br>**Classes:** Same nine tissue categories as NCT-CRC-HE-100K. |
+| CCRCC-Tissue | Empty, Cancer, Normal, Other, Stroma, Blood | **Task:** Renal tissue classification<br>**Classes:** Background, tumor, normal kidney, stromal, blood, and miscellaneous tissue. |
+| **Tumor Subtyping / Grading** | | |
+| MHIST | Hyperplastic Polyp (HP), Sessile Serrated Adenoma (SSA) | **Task:** Colorectal polyp classification<br>**HP:** Benign hyperplastic polyp<br>**SSA:** Premalignant serrated lesion. |
+| SICAPv2 | Normal, Gleason Grade 3 (GG3), Gleason Grade 4 (GG4), Gleason Grade 5 (GG5) | **Task:** Prostate cancer grading<br>**GG3--GG5:** Increasing Gleason grade and tumor aggressiveness<br>**Normal:** Non-neoplastic prostate tissue. |
+\n\n## 🛠️ Usage
 
 ### Prerequisites
 
@@ -155,7 +178,7 @@ INVEX evaluates **28 pathology foundation models** across 4 paradigms:
 ### Step 1 — Downstream Oracle (CPU)
 Compute the labeled ground truth via patient-grouped linear probe and consensus baseline:
 ```bash
-python main.py reproducibility
+python main.py linear_probe_oracle
 ```
 
 ### Step 2 — Rotation Invariance (GPU)
@@ -164,11 +187,11 @@ Apply dihedral rotations (90°, 180°, 270°) to patches, re-embed through each 
 # Single encoder
 python main.py invariance --encoder uni_v2 --save_emb
 
-# All 28 encoders (loop)
+# All 22 encoders (loop)
 for enc in uni_v1 uni_v2 virchow virchow2 gigapath hoptimus0 hoptimus1 \
            phikon phikon_v2 hibou_l gpfm h0-mini midnight12k openmidnight \
            kaiko-vitb8 kaiko-vitb16 kaiko-vits8 kaiko-vits16 kaiko-vitl14 \
-           lunit-vits8 genbio-pathfm conch_v1 conch_v15 musk ctranspath \
+           lunit-vits8 genbio-pathfm ctranspath \
            resnet50 gemma4-e4b gemma4-26b; do
     python main.py invariance --encoder "$enc" --n 4000 --bs 128
 done
@@ -189,7 +212,7 @@ python main.py probabilistic
 ### Step 5 — kNN Oracle (CPU)
 Compute the kNN-based downstream oracle as a secondary validation target:
 ```bash
-python main.py knn
+python main.py knn_probe_oracle
 ```
 
 ### Step 6 — Generate Figures & Tables (CPU)
