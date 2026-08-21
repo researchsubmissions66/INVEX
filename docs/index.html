@@ -679,7 +679,13 @@
             </article>
         </div>
 
-        <article class="result-panel">
+        <div class="results-tabs-container" style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 3rem; flex-wrap: wrap; margin-top: 2rem;">
+            <button class="results-tab active" data-target="panel-1">Leave-one-dataset-out</button>
+            <button class="results-tab" data-target="panel-2">Leave-one-task-out</button>
+            <button class="results-tab" data-target="panel-3">Leave-one-family-out</button>
+        </div>
+
+        <article class="result-panel" id="panel-1">
             <div class="result-panel-header">
                 <div>
                     <span class="result-number">01</span>
@@ -735,7 +741,7 @@
             </div>
         </article>
 
-        <article class="result-panel">
+        <article class="result-panel" id="panel-2" style="display: none;">
             <div class="result-panel-header">
                 <div>
                     <span class="result-number">02</span>
@@ -783,7 +789,7 @@
             </div>
         </article>
 
-        <article class="result-panel">
+        <article class="result-panel" id="panel-3" style="display: none;">
             <div class="result-panel-header">
                 <div>
                     <span class="result-number">03</span>

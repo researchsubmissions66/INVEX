@@ -135,5 +135,33 @@ document.addEventListener('DOMContentLoaded', function() {
             
         }, 350); // fast spawning
     }
+
+    // Results Tab Logic
+    const tabs = document.querySelectorAll('.results-tab');
+    const panels = document.querySelectorAll('.result-panel');
+    
+    if (tabs.length > 0 && panels.length > 0) {
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Hide all panels
+                panels.forEach(p => p.style.display = 'none');
+                
+                // Show the target panel
+                const targetId = tab.getAttribute('data-target');
+                const targetPanel = document.getElementById(targetId);
+                if (targetPanel) {
+                    targetPanel.style.display = 'block';
+                    // Re-trigger animation
+                    targetPanel.classList.remove('visible');
+                    setTimeout(() => targetPanel.classList.add('visible'), 50);
+                }
+            });
+        });
+    }
 });
 
