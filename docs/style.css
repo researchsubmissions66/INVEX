@@ -1998,6 +1998,9 @@ footer {
 .premium-table td:last-child {
     text-align: center;
 }
+.premium-table.text-left-last td:last-child {
+    text-align: left;
+}
 #encoders .premium-table td:nth-last-child(2) {
     text-align: center;
 }
