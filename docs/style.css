@@ -2037,3 +2037,315 @@ footer {
 .premium-table a i.fa-github:hover {
     opacity: 0.8;
 }
+
+/* Additional results */
+.results-section {
+    max-width: 1200px;
+    padding: 4.5rem 2rem 2rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.results-heading {
+    display: grid;
+    grid-template-columns: minmax(250px, 0.72fr) minmax(360px, 1.28fr);
+    gap: 4rem;
+    align-items: end;
+    margin-bottom: 2.5rem;
+}
+
+.results-heading .section-title,
+.results-heading .section-desc {
+    margin-bottom: 0;
+}
+
+.results-kicker {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: #6366f1;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.results-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.result-stat {
+    min-height: 150px;
+    padding: 1.65rem;
+    border: 1px solid rgba(99, 102, 241, 0.16);
+    border-radius: 16px;
+    background: linear-gradient(145deg, #ffffff 0%, #f5f7ff 100%);
+    box-shadow: 0 12px 30px -24px rgba(30, 41, 59, 0.42);
+}
+
+.result-stat:nth-child(2) {
+    border-color: rgba(13, 148, 136, 0.18);
+    background: linear-gradient(145deg, #ffffff 0%, #f0fdfa 100%);
+}
+
+.result-stat:nth-child(3) {
+    border-color: rgba(124, 58, 237, 0.16);
+    background: linear-gradient(145deg, #ffffff 0%, #faf5ff 100%);
+}
+
+.result-stat-value,
+.result-stat-label {
+    display: block;
+}
+
+.result-stat-value {
+    margin-bottom: 0.55rem;
+    color: #0f172a;
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(1.55rem, 3vw, 2.15rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+}
+
+.result-stat-label {
+    max-width: 29ch;
+    color: #64748b;
+    font-size: 0.88rem;
+    line-height: 1.55;
+}
+
+.result-panel {
+    margin-top: 1.25rem;
+    padding: 2.25rem;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 18px 45px -36px rgba(15, 23, 42, 0.42);
+}
+
+.result-panel-header {
+    display: grid;
+    grid-template-columns: minmax(240px, 0.82fr) minmax(360px, 1.18fr);
+    gap: 3rem;
+    align-items: start;
+    margin-bottom: 2rem;
+}
+
+.result-panel-header > div {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.9rem;
+    align-items: start;
+}
+
+.result-number {
+    padding-top: 0.18rem;
+    color: #94a3b8;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.result-panel h3 {
+    margin: 0;
+    font-size: 1.35rem;
+    line-height: 1.25;
+}
+
+.result-panel-header > p {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.72;
+}
+
+.result-table-wrap {
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+
+.results-table {
+    min-width: 500px;
+    font-variant-numeric: tabular-nums;
+}
+
+.results-table th {
+    padding: 0.8rem 1.15rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+}
+
+.results-table td {
+    padding: 0.72rem 1.15rem;
+    font-size: 0.86rem;
+}
+
+.results-table th:not(:first-child),
+.results-table td:not(:first-child),
+.results-table td:last-child {
+    text-align: right;
+}
+
+.results-table .reference-row {
+    background: #eefbf3;
+}
+
+.results-table .emphasis-row {
+    background: #f4f2ff;
+}
+
+.results-table .reference-row td,
+.results-table .emphasis-row td {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.compact-table-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.compact-results-table {
+    min-width: 430px;
+}
+
+.family-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+.family-table-card {
+    padding: 1.35rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    background: #f8fafc;
+}
+
+.family-table-card h4 {
+    margin: 0 0 0.35rem;
+    color: #1e293b;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.03rem;
+}
+
+.family-table-card > p {
+    min-height: 2.8rem;
+    margin: 0 0 1rem;
+    color: #64748b;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.family-table-card .result-table-wrap {
+    background: #ffffff;
+}
+
+.result-interpretation {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 1.15rem;
+    align-items: start;
+    margin-top: 1.25rem;
+    padding: 1.15rem 1.25rem;
+    border-top: 1px solid #dbeafe;
+    border-bottom: 1px solid #dbeafe;
+    background: #f8fbff;
+}
+
+.result-interpretation > span {
+    color: #2563eb;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.result-interpretation p {
+    margin: 0;
+    color: #475569;
+    font-size: 0.88rem;
+    line-height: 1.68;
+}
+
+.result-note {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+    margin-top: 1.25rem;
+    padding: 1rem 1.15rem;
+    border-left: 3px solid #0d9488;
+    border-radius: 0 10px 10px 0;
+    background: #f0fdfa;
+    color: #475569;
+}
+
+.result-note i {
+    padding-top: 0.25rem;
+    color: #0d9488;
+}
+
+.result-note p {
+    margin: 0;
+    font-size: 0.87rem;
+    line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+    .results-heading,
+    .result-panel-header {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .results-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .result-stat {
+        min-height: 0;
+    }
+
+    .result-stat-label {
+        max-width: none;
+    }
+
+    .family-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .family-table-card > p {
+        min-height: 0;
+    }
+}
+
+@media (max-width: 640px) {
+    .results-section {
+        padding: 3.5rem 1rem 1rem;
+    }
+
+    .result-panel {
+        padding: 1.25rem;
+        border-radius: 14px;
+    }
+
+    .result-panel-header > div {
+        gap: 0.65rem;
+    }
+
+    .family-table-card {
+        padding: 0.9rem;
+    }
+
+    .result-interpretation {
+        grid-template-columns: 1fr;
+        gap: 0.45rem;
+        padding: 1rem;
+    }
+}
