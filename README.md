@@ -16,8 +16,7 @@
 ## 🚀 Key Features
 
 - **Label-Free Ranking**: Predicts downstream oracle performance without needing any labels or fine-tuning.
-- **High Linear Probe Oracle**: Label-free ranking (Kendall W = 0.92) is significantly more reproducible than labeled benchmarks (W = 0.51).
-- **Massive Scale**: Evaluated across **22 pathology foundation models** spanning 4 paradigms and **16 public patch-level benchmarks** covering 8+ organs and >1.2M patches.
+- **Massive Scale**: Evaluated across **22 pathology foundation models** and **16 public patch-level benchmarks** covering 8+ organs and >1.2M patches.
 - **Probabilistic Scoring**: Uses von Mises–Fisher (vMF) concentration parameters to model invariance and expressiveness on the unit hypersphere, with Bayesian-bootstrap credible intervals.
 
 ---
@@ -58,9 +57,9 @@ INVEX/
 
 ## 🔬 Encoders (22 Models)
 
-INVEX evaluates **22 pathology foundation models** across 4 paradigms:
+INVEX evaluates **22 pathology foundation models**:
 
-### Pathology SSL (Self-Supervised Learning)
+### Pathology Foundation Models
 | Encoder | Backbone | Training | Dim |
 | :--- | :--- | :--- | :---: |
 | `UNI-v1` | ViT-L/16 | DINOv2 | 1024 |
@@ -84,18 +83,7 @@ INVEX evaluates **22 pathology foundation models** across 4 paradigms:
 | `Kaiko-ViT-L/14` | ViT-L/14 | DINOv2 | 1024 |
 | `Lunit-ViT-S/8` | ViT-S/8 | DINO | 384 |
 | `GenBio-PathFM` | ViT (large) | SSL | 4608 |
-
-### Pathology Other
-| Encoder | Backbone | Training | Dim |
-| :--- | :--- | :--- | :---: |
 | `CTransPath` | CNN+Swin-T | SRCL contrastive | 768 |
-
-### Baselines
-| Encoder | Backbone | Training | Dim |
-| :--- | :--- | :--- | :---: |
-| `resnet50` | ResNet-50 | ImageNet supervised | 1024 |
-| `gemma4-e4b` | Gemma-3n tower | General VLM | 768 |
-| `gemma4-26b` | Gemma tower | General VLM | 1152 |
 
 ---
 
